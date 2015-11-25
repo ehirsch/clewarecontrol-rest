@@ -1,0 +1,48 @@
+buildscript {
+    ext {
+        springBootVersion = '1.2.6.RELEASE'
+    }
+    repositories {
+	  jcenter()
+    }
+    dependencies {
+      classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+	  classpath 'io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE'
+	  classpath 'org.springframework:springloaded:1.2.4.RELEASE'
+    }
+}
+
+apply plugin: 'groovy'
+apply plugin: 'spring-boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'idea'
+
+jar {
+    baseName = 'clewarecontrol-rest'
+    version = '0.0.1-SNAPSHOT'
+}
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    jcenter()
+}
+
+
+dependencies {
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.codehaus.groovy:groovy'
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'org.codehaus.groovy:groovy-test'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.7'
+}
+
+idea {
+  module {
+	inheritOutputDirs = false
+	outputDir = file("$buildDir/classes/main/")
+  }
+}

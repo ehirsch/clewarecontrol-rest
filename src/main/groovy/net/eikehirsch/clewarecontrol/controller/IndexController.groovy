@@ -1,5 +1,6 @@
-package net.eikehirsch.clewarecontrol
+package net.eikehirsch.clewarecontrol.controller
 
+import net.eikehirsch.clewarecontrol.ClewareControl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController
  * Time: 17:36
  */
 @RestController
-class ClewareController {
+class IndexController {
 
   private static boolean DEBUG = true;
 

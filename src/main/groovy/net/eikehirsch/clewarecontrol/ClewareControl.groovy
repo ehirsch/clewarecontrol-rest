@@ -1,5 +1,6 @@
 package net.eikehirsch.clewarecontrol
 
+import net.eikehirsch.clewarecontrol.device.ClewareControlDevice
 import net.eikehirsch.clewarecontrol.exception.BinaryNotFoundException
 import net.eikehirsch.clewarecontrol.process.ProcessStarter
 import org.slf4j.Logger
@@ -40,7 +41,7 @@ class ClewareControl {
 
 	  }
 	}
-	process.waitFor()
+    process.waitFor()
 
 	return devices;
   }

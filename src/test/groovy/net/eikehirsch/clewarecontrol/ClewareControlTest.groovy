@@ -12,6 +12,14 @@ import static groovy.test.GroovyAssert.shouldFail
 public class ClewareControlTest {
 
 
+	private mockProcess(exitValue, output) {
+		def processMock = [
+				waitFor       : {exitValue},
+				getInputStream: { new ByteArrayInputStream(output.stripIndent().bytes) }
+		] as Process
+		processMock
+	}
+
 	private mockProcessStarter(commands, processMock) {
 		def starterMock = [
 				start: { cmd ->
@@ -41,9 +49,9 @@ public class ClewareControlTest {
 	public void emptyList() throws Exception {
 
 		Process processMock = mockProcess(0,"""
-					Cleware library version: 330
-					Number of Cleware devices found: 0
-					 """)
+			Cleware library version: 330
+			Number of Cleware devices found: 0
+			""")
 
 		ProcessStarter processStarterMock = mockProcessStarter(["clewarecontrol", "-l"], processMock)
 
@@ -51,16 +59,6 @@ public class ClewareControlTest {
 		def list = ctrl.list();
 
 		assert list.isEmpty();
-	}
-
-	private mockProcess(exitValue, output) {
-		def processMock = [
-				waitFor       : {exitValue},
-				getInputStream: {
-					new ByteArrayInputStream(output.stripIndent().bytes)
-				}
-		] as Process
-		processMock
 	}
 
 

@@ -2,7 +2,6 @@ package net.eikehirsch.clewarecontrol
 
 import net.eikehirsch.clewarecontrol.process.ProcessBuilderProcessStarter
 import net.eikehirsch.clewarecontrol.process.ProcessStarter
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Bean
@@ -19,7 +18,6 @@ class ClewareControlApp {
 	  return new ProcessBuilderProcessStarter()
   	}
 
-  	@Autowired
 	@Bean
     ClewareControl clewareControl( ProcessStarter processStarter) {
 	  return new ClewareControl(processStarter)

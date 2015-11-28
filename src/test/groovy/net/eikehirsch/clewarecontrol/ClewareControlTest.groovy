@@ -12,7 +12,7 @@ import static groovy.test.GroovyAssert.shouldFail
 public class ClewareControlTest {
 
 
-	private mockProcess(exitValue, output) {
+	static mockProcess(exitValue, output) {
 		def processMock = [
 				waitFor       : {exitValue},
 				getInputStream: { new ByteArrayInputStream(output.stripIndent().bytes) }
@@ -20,7 +20,7 @@ public class ClewareControlTest {
 		processMock
 	}
 
-	private mockProcessStarter(commands, processMock) {
+	static mockProcessStarter(commands, processMock) {
 		def starterMock = [
 				start: { cmd ->
 					assert cmd == commands

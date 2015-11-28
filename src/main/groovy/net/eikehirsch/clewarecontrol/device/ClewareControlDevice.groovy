@@ -4,6 +4,10 @@ class ClewareControlDevice {
 
 	private String type
 	private int version
-	private int serial
+
+	/**
+	 * This will store the serial number of this device
+	 */
+	private int id
 
 }

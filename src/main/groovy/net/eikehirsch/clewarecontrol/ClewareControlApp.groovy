@@ -27,11 +27,3 @@ class ClewareControlApp {
 }
 
 // clewarecontrol -c 1 -d 902492 -as 2 0
-
-
-// clewarecontrol -l
-// Device: 0, type: Switch1 (8), version: 106, serial number: 902492
-
-// no binary
-// java.io.IOException "Cannot run program "clewarecontrol": error=2, No such file or directory"
-

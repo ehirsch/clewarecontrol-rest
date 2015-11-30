@@ -25,15 +25,18 @@ class ClewareControlAppTests {
 	@Configuration
 	static class ClewareControlMockingTestConfig {
 
-		// Stub the runtime.
+		// Stub the runtime. We can't be sure that the binary will be in place when we run our tests.
+		// What's more important is, that subbing the binary is the only way to guarantee a text fixture.
 		@Bean
 		@Primary
 		ProcessStarter stubedProcessStarter() {
 			def processStarter = [
 					start: { String[] cmd ->
-						def process
+						Process process
 						def commandLine = cmd.join(' ');
 						switch(commandLine) {
+							// result of the list command.
+							// This list will grow as I get more knowledge about other devices available.
 							case ~/.*-l/:
 								process = ClewareControlTest.mockProcess(0,"""
 									Cleware library version: 330
@@ -41,6 +44,10 @@ class ClewareControlAppTests {
                                     Device: 0, type: Switch1 (8), version: 106, serial number: 902492
                                     Device: 1, type: Switch1 (8), version: 106, serial number: 902493
 								""")
+								break;
+							default:
+								throw new IllegalStateException(
+										"This test was run with an unknown clewarecontrol command.");
 						}
 						process
 					}

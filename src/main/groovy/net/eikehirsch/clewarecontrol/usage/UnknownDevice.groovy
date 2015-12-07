@@ -1,4 +1,7 @@
-package net.eikehirsch.clewarecontrol
+package net.eikehirsch.clewarecontrol.usage
+
+import net.eikehirsch.clewarecontrol.ClewareControlDevice
+
 /**
  * @author Eike Hirsch
  * Date: 26.11.15

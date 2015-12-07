@@ -14,9 +14,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
-
 @RunWith(SpringJUnit4ClassRunner)
 @SpringApplicationConfiguration(classes = ClewareControlApp)
 @WebAppConfiguration
@@ -40,9 +37,10 @@ class ClewareControlAppTests {
 							case ~/.*-l/:
 								process = ClewareControlTest.mockProcess(0,"""
 									Cleware library version: 330
-									Number of Cleware devices found: 2
+									Number of Cleware devices found: 3
                                     Device: 0, type: Switch1 (8), version: 106, serial number: 902492
                                     Device: 1, type: Switch1 (8), version: 106, serial number: 902493
+                                    Device: 2, type: Unknown, version: 106, serial number: 902494
 								""")
 								break;
 							default:
@@ -56,7 +54,7 @@ class ClewareControlAppTests {
 		}
 	}
 
-  	private MockMvc mockMvc;
+  	protected MockMvc mockMvc;
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -68,10 +66,5 @@ class ClewareControlAppTests {
 
 	@Test
 	void contextLoads() {
-	}
-
-  	@Test
-	void testList() {
-		mockMvc.perform(get("/")).andDo(print())
 	}
 }

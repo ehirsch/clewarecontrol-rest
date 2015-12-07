@@ -31,10 +31,11 @@ repositories {
 
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
-	compile("org.springframework.boot:spring-boot-starter-hateoas")
+	compile 'org.springframework.boot:spring-boot-starter-hateoas'
     compile 'org.codehaus.groovy:groovy'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'org.codehaus.groovy:groovy-test'
+	testCompile 'com.jayway.jsonpath:json-path:2.1.0'
 }
 
 task wrapper(type: Wrapper) {

@@ -1,13 +1,15 @@
 package net.eikehirsch.clewarecontrol.device
 
-class ClewareControlDevice {
+/**
+ * Abstract base class of all devices
+ */
+abstract class ClewareControlDevice {
 
-	private String type
-	private int version
+	int version
 
 	/**
 	 * This will store the serial number of this device
 	 */
-	private int id
+	int id
 
 }

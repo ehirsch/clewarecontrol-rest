@@ -1,14 +1,15 @@
 package net.eikehirsch.clewarecontrol.controller
 
-import jdk.nashorn.internal.ir.annotations.Ignore
 import net.eikehirsch.clewarecontrol.ClewareControlAppTests
+import org.junit.Ignore
 import org.junit.Test
 
 import static org.hamcrest.Matchers.containsInAnyOrder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+
 /**
  * This will test the IndexController against the text fixture defined in {@link ClewareControlAppTests}.
  */

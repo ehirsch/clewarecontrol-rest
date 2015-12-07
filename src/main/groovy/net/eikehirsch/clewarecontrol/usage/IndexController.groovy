@@ -1,8 +1,9 @@
-package net.eikehirsch.clewarecontrol.controller
+package net.eikehirsch.clewarecontrol.usage
 
 import net.eikehirsch.clewarecontrol.ClewareControl
-import net.eikehirsch.clewarecontrol.resource.UsageInfoResource
+import net.eikehirsch.clewarecontrol.trafficlights.TrafficLightsController
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.hateoas.ResourceSupport
 import org.springframework.hateoas.mvc.ControllerLinkBuilder
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -35,4 +36,9 @@ class IndexController {
 	  new ResponseEntity<UsageInfoResource>(info, HttpStatus.OK)
   }
 
+	static class UsageInfoResource extends ResourceSupport {
+
+		String title
+		String text
+	}
 }

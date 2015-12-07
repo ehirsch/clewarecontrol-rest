@@ -1,8 +1,8 @@
-package net.eikehirsch.clewarecontrol.controller
+package net.eikehirsch.clewarecontrol.trafficlights
 
 import net.eikehirsch.clewarecontrol.ClewareControl
-import net.eikehirsch.clewarecontrol.device.TrafficLightsDevice
-import net.eikehirsch.clewarecontrol.resource.UsageInfoResource
+
+import net.eikehirsch.clewarecontrol.usage.IndexController
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.hateoas.ExposesResourceFor
 import org.springframework.hateoas.mvc.ControllerLinkBuilder
@@ -25,10 +25,10 @@ class TrafficLightsController {
   }
 
   @RequestMapping
-  ResponseEntity<UsageInfoResource> info() {
+  ResponseEntity<IndexController.UsageInfoResource> info() {
 
-	  UsageInfoResource info = new UsageInfoResource(title: "ClewareControl traffic lights",
-	                                                 text: "this is going to be a short instruction on how to use this api.")
+	  IndexController.UsageInfoResource info = new IndexController.UsageInfoResource(title: "ClewareControl traffic lights",
+	                                                                                 text: "this is going to be a short instruction on how to use this api.")
 	  info.add(ControllerLinkBuilder.linkTo (TrafficLightsController).withSelfRel())
 	  new ResponseEntity(info, HttpStatus.OK)
   }

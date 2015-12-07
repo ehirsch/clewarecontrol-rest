@@ -1,8 +1,7 @@
 package net.eikehirsch.clewarecontrol
 import net.eikehirsch.clewarecontrol.exception.BinaryNotFoundException
 import net.eikehirsch.clewarecontrol.process.ProcessStarter
-import net.eikehirsch.clewarecontrol.device.TrafficLightsDevice
-import net.eikehirsch.clewarecontrol.device.UnknownDevice
+import net.eikehirsch.clewarecontrol.trafficlights.TrafficLightsDevice
 import org.junit.Before
 import org.junit.Test
 

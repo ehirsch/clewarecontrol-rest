@@ -1,5 +1,4 @@
-package net.eikehirsch.clewarecontrol.device
-
+package net.eikehirsch.clewarecontrol
 /**
  * @author Eike Hirsch
  * Date: 26.11.15

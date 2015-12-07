@@ -1,4 +1,4 @@
-package net.eikehirsch.clewarecontrol.device
+package net.eikehirsch.clewarecontrol
 
 /**
  * Abstract base class of all devices

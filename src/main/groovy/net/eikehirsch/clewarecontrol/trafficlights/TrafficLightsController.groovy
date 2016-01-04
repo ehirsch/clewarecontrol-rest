@@ -6,6 +6,7 @@ import org.springframework.hateoas.mvc.ControllerLinkBuilder
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 
 @Controller
@@ -24,10 +25,17 @@ class TrafficLightsController {
   @RequestMapping
   ResponseEntity<TrafficLightsUsageInfoResource> info() {
 
-	  TrafficLightsUsageInfoResource info = new TrafficLightsUsageInfoResource(title: "ClewareControl traffic lights",
-	                                                                                 text: "this is going to be a short instruction on how to use this api.")
+	  TrafficLightsUsageInfoResource info = new TrafficLightsUsageInfoResource(
+			  title: "ClewareControl traffic lights",
+			  text: "this is going to be a short instruction on how to use this api.")
 	  info.add(ControllerLinkBuilder.linkTo (TrafficLightsController).withSelfRel())
 	  new ResponseEntity(info, HttpStatus.OK)
+  }
+
+  @RequestMapping("/{id}")
+  ResponseEntity<TrafficLightsDevice> get(@PathVariable int id) {
+
+	  new ResponseEntity(clewareControl.createTrafficLights(id), HttpStatus.OK)
   }
 
 }

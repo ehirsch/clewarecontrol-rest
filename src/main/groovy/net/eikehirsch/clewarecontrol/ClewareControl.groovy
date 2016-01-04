@@ -1,6 +1,7 @@
 package net.eikehirsch.clewarecontrol
 
 import net.eikehirsch.clewarecontrol.exception.BinaryNotFoundException
+import net.eikehirsch.clewarecontrol.exception.DeviceNotFoundException
 import net.eikehirsch.clewarecontrol.process.ProcessStarter
 import net.eikehirsch.clewarecontrol.trafficlights.TrafficLightsDevice
 import net.eikehirsch.clewarecontrol.usage.UnknownDevice
@@ -10,11 +11,10 @@ import org.slf4j.LoggerFactory
 /**
  * This class is used to wrap all calls to the clewarecontrol binary.
  */
+// TODO: remove warnings
 class ClewareControl {
 
 	static final Logger LOG = LoggerFactory.getLogger(ClewareControl.class);
-
-	static final String CLEWARECONTROL = "clewarecontrol"
 
 	private ProcessStarter starter
 
@@ -30,13 +30,8 @@ class ClewareControl {
 	 */
 	List<ClewareControlDevice> list(def filterType=null) {
 		List<ClewareControlDevice> devices = [];
-		String[] cmd = [CLEWARECONTROL, "-l"]
-		def process
-		try {
-			process = starter.start(cmd)
-		} catch (e) {
-			throw new BinaryNotFoundException("Clewarecontrol binary not found. Are you sure you installed it?", e.getCause())
-		}
+		Process process = clewarecontrol(["-l"])
+
 		process.inputStream.eachLine { String line ->
 			LOG.info(line);
 			// We are only interested in lines which contain actual device information.
@@ -80,6 +75,7 @@ class ClewareControl {
 		def device
 		switch (definition.type) {
 			case 'Switch1 (8)':
+				// TODO: check if we are able to call another command here. (createTrafficLights)
 				device = new TrafficLightsDevice(id: Integer.valueOf(definition.serial_number),
 				                                 version: Integer.valueOf(definition.version))
 				break
@@ -89,6 +85,56 @@ class ClewareControl {
 		}
 
 		device
+	}
+
+	/**
+	 * Creates  and initializes a TrafficLightsDevice.
+	 */
+	TrafficLightsDevice createTrafficLights(int id) {
+		LOG.info("Creating traffic lights device.")
+		// first create a basic device
+		def device = new TrafficLightsDevice(id: id)
+
+		// request the state from the command line.
+		Process process = clewarecontrol(["-c", "1", "-d", "${id}", "-rs", "0", "-rs", "1", "-rs", "2"])
+		def counter = 0;
+		process.inputStream.splitEachLine(/\s/) { splittedLine ->
+			if( 3 == splittedLine.size() ) {
+				LOG.debug("${splittedLine}" )
+				if( 0 == counter ) {
+					// red
+					device.r = 'On' == splittedLine[1]
+				} else if( 1 == counter ) {
+					// yellow
+					device.y = 'On' == splittedLine[1]
+				} else if( 2 == counter ) {
+					// green
+					device.g = 'On' == splittedLine[1]
+				}
+				counter++
+			}
+		}
+		def exitValue = process.waitFor()
+
+		// check the exit value
+		if( 0 == exitValue ) {
+			return device
+		} else {
+			throw new DeviceNotFoundException("It looks like there is no device with id ${id}.")
+		}
+	}
+
+	// TODO: dynamic parameter count?
+	private clewarecontrol(cmd) {
+		def process
+		try {
+			cmd.add 0, "clewarecontrol"
+			process = starter.start(cmd as String[])
+		} catch (e) {
+			throw new BinaryNotFoundException("Clewarecontrol binary not found. Are you sure you installed it?",
+			                                  e.getCause())
+		}
+		process
 	}
 
 

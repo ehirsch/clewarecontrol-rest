@@ -1,0 +1,5 @@
+= Clewarecontrol REST
+
+A RESTful API for the clewarecontrol binary
+
+TBD

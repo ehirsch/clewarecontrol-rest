@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory
 /**
  * This class is used to wrap all calls to the clewarecontrol binary.
  */
-// TODO: remove warnings
 class ClewareControl {
 
 	static final Logger LOG = LoggerFactory.getLogger(ClewareControl.class);

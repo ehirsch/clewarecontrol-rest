@@ -128,7 +128,7 @@ class ClewareControl {
 		def process
 		try {
 			// convert the array into a list for easy processing
-			def list = cmd.collect {it}
+			def list = cmd as List
 			list.add 0, "clewarecontrol"
 			process = starter.start(list as String[])
 		} catch (e) {

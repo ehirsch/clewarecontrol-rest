@@ -28,11 +28,12 @@ class ClewareControl {
 	 *
 	 * @return A list of devices or an empty list.
 	 */
+	@SuppressWarnings("GroovyMissingReturnStatement")
 	List<ClewareControlDevice> listDevices(def filterType=null) {
 		List<ClewareControlDevice> devices = [];
 		Process process = clewarecontrol "-l"
 
-		process.inputStream.eachLine { String line ->
+		process.inputStream.eachLine { line ->
 			LOG.info(line);
 			// We are only interested in lines which contain actual device information.
 			if (line.startsWith('Device')) {
@@ -76,12 +77,10 @@ class ClewareControl {
 		switch (definition.type) {
 			case 'Switch1 (8)':
 				// TODO: check if we are able to call another command here. (createTrafficLights)
-				device = new TrafficLightsDevice(id: Integer.valueOf(definition.serial_number),
-				                                 version: Integer.valueOf(definition.version))
+				device = new TrafficLightsDevice(id: definition.serial_number, version: definition.version)
 				break
 			default:
-				device = new UnknownDevice(id: Integer.valueOf(definition.serial_number),
-				                           version: Integer.valueOf(definition.version))
+				device = new UnknownDevice(id: definition.serial_number, version: definition.version)
 		}
 
 		device
@@ -90,6 +89,7 @@ class ClewareControl {
 	/**
 	 * Creates  and initializes a TrafficLightsDevice.
 	 */
+	@SuppressWarnings("GroovyMissingReturnStatement")
 	TrafficLightsDevice createTrafficLightsDevice(int id) {
 		LOG.info("Creating traffic lights device.")
 		// first create a basic device
@@ -98,18 +98,18 @@ class ClewareControl {
 		// request the state from the command line.
 		Process process = clewarecontrol "-c", "1", "-d", "${id}", "-rs", "0", "-rs", "1", "-rs", "2"
 		def counter = 0;
-		process.inputStream.splitEachLine(/\s/) { splittedLine ->
-			if( 3 == splittedLine.size() ) {
-				LOG.debug("${splittedLine}" )
+		process.inputStream.splitEachLine(/\s/) { splitLine ->
+			if( 3 == splitLine.size() ) {
+				LOG.debug("${splitLine}" )
 				if( 0 == counter ) {
 					// red
-					device.r = 'On' == splittedLine[1]
+					device.r = 'On' == splitLine[1]
 				} else if( 1 == counter ) {
 					// yellow
-					device.y = 'On' == splittedLine[1]
+					device.y = 'On' == splitLine[1]
 				} else if( 2 == counter ) {
 					// green
-					device.g = 'On' == splittedLine[1]
+					device.g = 'On' == splitLine[1]
 				}
 				counter++
 			}

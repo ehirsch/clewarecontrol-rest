@@ -28,7 +28,7 @@ class ClewareControl {
 	 *
 	 * @return A list of devices or an empty list.
 	 */
-	List<ClewareControlDevice> list(def filterType=null) {
+	List<ClewareControlDevice> listDevices(def filterType=null) {
 		List<ClewareControlDevice> devices = [];
 		Process process = clewarecontrol "-l"
 
@@ -90,7 +90,7 @@ class ClewareControl {
 	/**
 	 * Creates  and initializes a TrafficLightsDevice.
 	 */
-	TrafficLightsDevice createTrafficLights(int id) {
+	TrafficLightsDevice createTrafficLightsDevice(int id) {
 		LOG.info("Creating traffic lights device.")
 		// first create a basic device
 		def device = new TrafficLightsDevice(id: id)

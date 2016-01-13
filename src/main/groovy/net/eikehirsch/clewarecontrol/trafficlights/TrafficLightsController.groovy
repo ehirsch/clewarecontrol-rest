@@ -35,7 +35,7 @@ class TrafficLightsController {
   @RequestMapping("/{id}")
   ResponseEntity<TrafficLightsDevice> get(@PathVariable int id) {
 
-	  new ResponseEntity(clewareControl.createTrafficLights(id), HttpStatus.OK)
+	  new ResponseEntity(clewareControl.createTrafficLightsDevice(id), HttpStatus.OK)
   }
 
 }

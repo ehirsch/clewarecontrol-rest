@@ -60,7 +60,7 @@ class ClewareControlTest {
 		] as ProcessStarter
 
 		ctrl = new ClewareControl(starterMock)
-		def ex = shouldFail(BinaryNotFoundException.class) { ctrl.list() }
+		def ex = shouldFail(BinaryNotFoundException.class) { ctrl.listDevices() }
 
 		assert ex.message == "Clewarecontrol binary not found. Are you sure you installed it?"
 	}
@@ -79,7 +79,7 @@ class ClewareControlTest {
 		ProcessStarter processStarterMock = mockProcessStarter(["clewarecontrol", "-l"], processMock)
 
 		ctrl = new ClewareControl(processStarterMock)
-		def list = ctrl.list()
+		def list = ctrl.listDevices()
 
 		assert list.isEmpty()
 	}
@@ -89,7 +89,7 @@ class ClewareControlTest {
 	@Test
 	void listAllDevicesAreReturned(){
 		mockClewareControlList()
-		def list = ctrl.list()
+		def list = ctrl.listDevices()
 
 		assert list.size() == 3
 	}
@@ -97,7 +97,7 @@ class ClewareControlTest {
 	@Test
 	void listAllDevicesAreInitialized(){
 		mockClewareControlList()
-		def list = ctrl.list()
+		def list = ctrl.listDevices()
 
 		assert list[0].id == 902492
 		assert list[1].id == 902493
@@ -107,7 +107,7 @@ class ClewareControlTest {
 	@Test
 	void listShouldCreateDevicesOfCorrectType(){
 		mockClewareControlList()
-		def list = ctrl.list()
+		def list = ctrl.listDevices()
 
 		assert list[0] instanceof TrafficLightsDevice
 		assert list[1] instanceof TrafficLightsDevice
@@ -118,7 +118,7 @@ class ClewareControlTest {
 	@Test
 	void listShouldBeAbleToFilterDevicesByType(){
 		mockClewareControlList()
-		def list = ctrl.list(TrafficLightsDevice.class)
+		def list = ctrl.listDevices(TrafficLightsDevice.class)
 
 		assert list.size() == 2
 		assert list[0] instanceof TrafficLightsDevice
@@ -134,7 +134,7 @@ class ClewareControlTest {
 			Status: On (1)
 			Status: Off (0)
 		""")
-		def device = ctrl.createTrafficLights(42);
+		def device = ctrl.createTrafficLightsDevice(42);
 
 		assert device.id == 42
 		assert !device.r
@@ -147,7 +147,7 @@ class ClewareControlTest {
 			Status: Off (0)
 			Status: On (1)
 		""")
-		device = ctrl.createTrafficLights(42);
+		device = ctrl.createTrafficLightsDevice(42);
 
 		assert device.id == 42
 		assert device.r

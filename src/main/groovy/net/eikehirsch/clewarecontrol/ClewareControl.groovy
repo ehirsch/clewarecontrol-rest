@@ -30,7 +30,7 @@ class ClewareControl {
 	 */
 	List<ClewareControlDevice> list(def filterType=null) {
 		List<ClewareControlDevice> devices = [];
-		Process process = clewarecontrol(["-l"])
+		Process process = clewarecontrol "-l"
 
 		process.inputStream.eachLine { String line ->
 			LOG.info(line);
@@ -96,7 +96,7 @@ class ClewareControl {
 		def device = new TrafficLightsDevice(id: id)
 
 		// request the state from the command line.
-		Process process = clewarecontrol(["-c", "1", "-d", "${id}", "-rs", "0", "-rs", "1", "-rs", "2"])
+		Process process = clewarecontrol "-c", "1", "-d", "${id}", "-rs", "0", "-rs", "1", "-rs", "2"
 		def counter = 0;
 		process.inputStream.splitEachLine(/\s/) { splittedLine ->
 			if( 3 == splittedLine.size() ) {
@@ -124,13 +124,15 @@ class ClewareControl {
 		}
 	}
 
-	// TODO: dynamic parameter count?
-	private clewarecontrol(cmd) {
+	private clewarecontrol(String... cmd) {
 		def process
 		try {
-			cmd.add 0, "clewarecontrol"
-			process = starter.start(cmd as String[])
+			// convert the array into a list for easy processing
+			def list = cmd.collect {it}
+			list.add 0, "clewarecontrol"
+			process = starter.start(list as String[])
 		} catch (e) {
+			LOG.error("Something went wrong when calling the binary.", e);
 			throw new BinaryNotFoundException("Clewarecontrol binary not found. Are you sure you installed it?",
 			                                  e.getCause())
 		}

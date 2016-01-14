@@ -1,0 +1,15 @@
+language: java
+
+jdk:
+   - openjdk7
+   - oraclejdk7
+   - oraclejdk8
+
+#l8r
+#after_success:
+#   - mvn clean cobertura:cobertura
+
+notifications:
+  email:
+    recipients:
+      - me@eike-hirsch.net

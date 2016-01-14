@@ -76,10 +76,12 @@ class ClewareControl {
 		switch (definition.type) {
 			case 'Switch1 (8)':
 				// TODO: check if we are able to call another command here. (createTrafficLights)
-				device = new TrafficLightsDevice(id: definition.serial_number, version: definition.version)
+				device = new TrafficLightsDevice(id: definition.serial_number.toInteger(),
+				                                 version: definition.version.toInteger())
 				break
 			default:
-				device = new UnknownDevice(id: definition.serial_number, version: definition.version)
+				device = new UnknownDevice(id: definition.serial_number.toInteger(),
+				                           version: definition.version.toInteger())
 		}
 
 		device

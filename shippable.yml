@@ -5,9 +5,19 @@ jdk:
    - oraclejdk7
    - oraclejdk8
 
-#l8r
-#after_success:
-#   - mvn clean cobertura:cobertura
+# The path for Xunit to output test reports
+env:
+  - XUNIT_FILE=shippable/testresults/result.xml
+
+# Create directories for test and coverage reports
+before_script:
+      - mkdir -p shippable/testresults
+      #- mkdir -p shippable/codecoverage
+
+# Tell istanbul to generate a coverage report
+#after_script:
+     #- ./node_modules/.bin/istanbul cover grunt -- -u tdd
+     #- ./node_modules/.bin/istanbul report cobertura --dir  shippable/codecoverage/
 
 notifications:
   email:

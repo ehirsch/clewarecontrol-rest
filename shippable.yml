@@ -7,7 +7,7 @@ jdk:
 
 # The path for Xunit to output test reports
 env:
-  - XUNIT_FILE=shippable/testresults/result.xml
+  - ORG_GRADLE_PROJECT_testResultsDir=shippable/testresults
 
 # Create directories for test and coverage reports
 before_script:

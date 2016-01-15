@@ -12,6 +12,10 @@ buildscript {
     }
 }
 
+plugins {
+	id 'net.saliman.cobertura' version '2.3.0'
+}
+
 apply plugin: 'groovy'
 apply plugin: 'spring-boot'
 apply plugin: 'io.spring.dependency-management'
@@ -21,8 +25,10 @@ jar {
     baseName = 'clewarecontrol-rest'
     version = '0.0.1-SNAPSHOT'
 }
-sourceCompatibility = 1.7
+//noinspection GroovyUnusedAssignment
 targetCompatibility = 1.7
+//noinspection GroovyUnusedAssignment
+sourceCompatibility = 1.7
 
 repositories {
     jcenter()
@@ -38,8 +44,13 @@ dependencies {
 	testCompile 'com.jayway.jsonpath:json-path:2.1.0'
 }
 
+// for shippable we want to redirect some outputs
+if( hasProperty("testResultsDir")) {
+	test.reports.junitXml.destination = testResultsDir
+}
+
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.7'
+    gradleVersion = '2.10'
 }
 
 idea {

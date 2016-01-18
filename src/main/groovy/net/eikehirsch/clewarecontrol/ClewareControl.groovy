@@ -49,7 +49,7 @@ class ClewareControl {
 			return devices.grep(filterType)
 		}
 
-		return devices;
+		devices
 	}
 
 	/**

@@ -19,7 +19,8 @@ class ClewareControlTest {
 	static mockProcess(exitValue, output) {
 		def processMock = [
 				waitFor       : {exitValue},
-				getInputStream: { new ByteArrayInputStream(output.stripIndent().bytes) }
+				getInputStream: { //noinspection GroovyAssignabilityCheck
+					new ByteArrayInputStream(output.stripIndent().bytes) }
 		] as Process
 		processMock
 	}

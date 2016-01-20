@@ -57,11 +57,12 @@ class ClewareControlAppTests {
 									errno at that time: Bad file descriptor (9)
 								""")
 								break;
+							case ~/.*-c 1 -d 902492 -as .*/:
+								process = ClewareControlTest.mockProcess(0,"""
+									TODO: check for the real output
+								""")
+								break;
 
-/*
-clewarecontrol -c 1 -d 901232 -as 0 1
-Switch 0: set to On
-*/
 							default:
 								throw new IllegalStateException(
 										"This test was run with an unknown clewarecontrol command.");

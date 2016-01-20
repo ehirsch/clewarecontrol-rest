@@ -1,19 +1,18 @@
 package net.eikehirsch.clewarecontrol
 
+import groovy.util.logging.Slf4j
 import net.eikehirsch.clewarecontrol.exception.BinaryNotFoundException
 import net.eikehirsch.clewarecontrol.exception.DeviceNotFoundException
 import net.eikehirsch.clewarecontrol.process.ProcessStarter
 import net.eikehirsch.clewarecontrol.trafficlights.TrafficLightsDevice
 import net.eikehirsch.clewarecontrol.usage.UnknownDevice
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 /**
  * This class is used to wrap all calls to the clewarecontrol binary.
  */
+@Slf4j
 class ClewareControl {
 
-	static final Logger LOG = LoggerFactory.getLogger(ClewareControl.class);
 
 	private ProcessStarter starter
 
@@ -33,7 +32,7 @@ class ClewareControl {
 		Process process = clewarecontrol "-l"
 
 		process.inputStream.eachLine { line ->
-			LOG.info(line);
+			log.info(line);
 			// We are only interested in lines which contain actual device information.
 			if (line.startsWith('Device')) {
 				// Device: 0, type: Switch1 (8), version: 106, serial number: 902492
@@ -66,10 +65,10 @@ class ClewareControl {
 			// remove whitespace
 			key = key.trim().replace(' ', '_')
 			value = value.trim()
-			LOG.debug("key: {}, value: {}", key, value)
+			log.debug("key: {}, value: {}", key, value)
 			definition.put(key, value);
 		}
-		LOG.debug(definition.toString())
+		log.debug(definition.toString())
 		// now we can create and return the actual device
 
 		def device
@@ -92,7 +91,7 @@ class ClewareControl {
 	 */
 	@SuppressWarnings("GroovyMissingReturnStatement")
 	TrafficLightsDevice createTrafficLightsDevice(int id) {
-		LOG.info("Creating traffic lights device.")
+		log.info("Creating traffic lights device.")
 		// first create a basic device
 		def device = new TrafficLightsDevice(id: id)
 
@@ -101,7 +100,7 @@ class ClewareControl {
 		def counter = 0;
 		process.inputStream.splitEachLine(/\s/) { splitLine ->
 			if( 3 == splitLine.size() ) {
-				LOG.debug("${splitLine}" )
+				log.debug("${splitLine}" )
 				if( 0 == counter ) {
 					// red
 					device.r = 'On' == splitLine[1]
@@ -125,6 +124,27 @@ class ClewareControl {
 		}
 	}
 
+	/**
+	 * This will update all three switches of the device
+	 *
+	 * @param device
+	 */
+	def updateTrafficLights(TrafficLightsDevice device) {
+		Process process = clewarecontrol "-c", "1", "-d", "${device.id}",
+		                                 "-as", "0", "${device.r?1:0}",
+		                                 "-as", "1", "${device.y?1:0}",
+		                                 "-as", "2", "${device.g?1:0}"
+		process.inputStream.eachLine { line ->
+				log.debug "${line}"
+		}
+		def exitValue = process.waitFor()
+
+		// check the exit value
+		if((0 != exitValue)) {
+			throw new DeviceNotFoundException("It looks like there is no device with id ${device.id}.")
+		}
+	}
+
 	private clewarecontrol(String... cmd) {
 		def process
 		try {
@@ -133,12 +153,10 @@ class ClewareControl {
 			list.add 0, "clewarecontrol"
 			process = starter.start(list as String[])
 		} catch (e) {
-			LOG.error("Something went wrong when calling the binary.", e);
+			log.error("Something went wrong when calling the binary.", e);
 			throw new BinaryNotFoundException("Clewarecontrol binary not found. Are you sure you installed it?",
 			                                  e.getCause())
 		}
 		process
 	}
-
-
 }

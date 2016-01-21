@@ -3,6 +3,7 @@
 == A RESTful API for the clewarecontrol binary
 
 image::https://img.shields.io/shippable/56974b721895ca44746840ab.svg[link=https://app.shippable.com/projects/56974b721895ca44746840ab]
+image::https://badge.waffle.io/ehirsch/clewarecontrol-rest.png[link=http://waffle.io/ehirsch/clewarecontrol-rest]
 
 This is a small http://projects.spring.io/spring-boot/[Springboot^] app written in Groovy. It provides a RESTful API for USB-devices from the _cleware GmbH_ by utilizing the clewarecontrol binary created by https://www.vanheusden.com/[Folkert van Heusden^].
 

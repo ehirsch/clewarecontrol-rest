@@ -7,7 +7,7 @@ image::https://badge.waffle.io/ehirsch/clewarecontrol-rest.png[link=http://waffl
 
 This is a small http://projects.spring.io/spring-boot/[Springboot^] app written in Groovy. It provides a RESTful API for USB-devices from the _cleware GmbH_ by utilizing the clewarecontrol binary created by https://www.vanheusden.com/[Folkert van Heusden^].
 
-If you never heared about http://www.cleware-shop.de/[Cleware^] or https://github.com/flok99/clewarecontrol[clewarecontrol^] check them out.
+If you never heard about http://www.cleware-shop.de/[Cleware^] or https://github.com/flok99/clewarecontrol[clewarecontrol^] check them out.
 
 == Usage
 

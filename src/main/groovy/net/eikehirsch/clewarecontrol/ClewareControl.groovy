@@ -67,7 +67,7 @@ class ClewareControl {
 	 *
 	 * @return A device
 	 */
-	private static createDeviceFromCommandLine(String line) {
+	private createDeviceFromCommandLine(String line) {
 		def definition = [:]
 		line.split(",").each { String it ->
 			def (key, value) = it.split(':')
@@ -83,9 +83,7 @@ class ClewareControl {
 		def device
 		switch (definition.type) {
 			case 'Switch1 (8)':
-				// TODO: check if we are able to call another command here. (createTrafficLights)
-				device = new TrafficLightsDevice(id: definition.serial_number.toInteger(),
-				                                 version: definition.version.toInteger())
+				device = createTrafficLightsDevice(definition.serial_number.toInteger())
 				break
 			default:
 				device = new UnknownDevice(id: definition.serial_number.toInteger(),

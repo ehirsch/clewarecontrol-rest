@@ -34,6 +34,11 @@ class TrafficLightsController {
 			  title: "ClewareControl traffic lights",
 			  text: "this is going to be a short instruction on how to use this api.")
 	  info.add(ControllerLinkBuilder.linkTo (TrafficLightsController).withSelfRel())
+	  // TODO: create embedded information
+	  def devices = clewareControl.listDevices(TrafficLightsDevice)
+	  devices.each {
+		  log.info "${it.id}"
+	  }
 	  new ResponseEntity(info, HttpStatus.OK)
   }
 
@@ -50,7 +55,6 @@ class TrafficLightsController {
 	  device.id = id
 	  // and now we are going to update the status.
 	  clewareControl.updateTrafficLights device
-//	  new ResponseEntity(clewareControl.createTrafficLightsDevice(id), HttpStatus.OK)
 	  new ResponseEntity(HttpStatus.ACCEPTED)
   }
 

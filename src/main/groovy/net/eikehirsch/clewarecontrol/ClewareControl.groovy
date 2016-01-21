@@ -13,42 +13,51 @@ import net.eikehirsch.clewarecontrol.usage.UnknownDevice
 @Slf4j
 class ClewareControl {
 
-
 	private ProcessStarter starter
-
 
 	ClewareControl(ProcessStarter starter) {
 		this.starter = starter
 	}
 
 	/**
+	 * Helper class to process the output of the list command
+	 */
+	class DeviceCollector {
+		def devices = [];
+
+		Closure outputProcessor() {
+			return { eachLine { String line ->
+				log.info(line);
+				// We are only interested in lines which contain actual device information.
+				if (line.startsWith('Device')) {
+					// Device: 0, type: Switch1 (8), version: 106, serial number: 902492
+					ClewareControlDevice device = createDeviceFromCommandLine(line)
+
+					devices.push(device)
+					}
+				}
+			}
+		}
+	}
+
+
+	/**
 	 * Will list all connected devices.
 	 *
 	 * @return A list of devices or an empty list.
 	 */
-	@SuppressWarnings("GroovyMissingReturnStatement")
 	List<ClewareControlDevice> listDevices(def filterType=null) {
-		List<ClewareControlDevice> devices = [];
-		Process process = clewarecontrol "-l"
 
-		process.inputStream.eachLine { line ->
-			log.info(line);
-			// We are only interested in lines which contain actual device information.
-			if (line.startsWith('Device')) {
-				// Device: 0, type: Switch1 (8), version: 106, serial number: 902492
-				ClewareControlDevice device = createDeviceFromCommandLine(line)
+		DeviceCollector collector = new DeviceCollector()
 
-				devices.push(device)
-			}
-		}
-		process.waitFor()
+		clewarecontrol("-l", collector.outputProcessor() )
 
 		// filter the list, if needed.
-		if( null != filterType ) {
-			return devices.grep(filterType)
+		if (null != filterType) {
+			return collector.devices.grep(filterType)
 		}
 
-		devices
+		collector.devices
 	}
 
 	/**
@@ -87,42 +96,52 @@ class ClewareControl {
 	}
 
 	/**
-	 * Creates  and initializes a TrafficLightsDevice.
+	 * Helper class to create a TrafficLightsDevice.
 	 */
-	@SuppressWarnings("GroovyMissingReturnStatement")
-	TrafficLightsDevice createTrafficLightsDevice(int id) {
-		log.info("Creating traffic lights device.")
-		// first create a basic device
-		def device = new TrafficLightsDevice(id: id)
+	class TrafficLightsDeviceCreator {
 
-		// request the state from the command line.
-		Process process = clewarecontrol "-c", "1", "-d", "${id}", "-rs", "0", "-rs", "1", "-rs", "2"
-		def counter = 0;
-		process.inputStream.splitEachLine(/\s/) { splitLine ->
-			if( 3 == splitLine.size() ) {
-				log.debug("${splitLine}" )
-				if( 0 == counter ) {
-					// red
-					device.r = 'On' == splitLine[1]
-				} else if( 1 == counter ) {
-					// yellow
-					device.y = 'On' == splitLine[1]
-				} else if( 2 == counter ) {
-					// green
-					device.g = 'On' == splitLine[1]
+		def device
+		def counter = 0
+
+		TrafficLightsDeviceCreator(device) {
+			this.device = device
+		}
+
+		Closure outputProcessor() {
+			return {
+				splitEachLine(/\s/) { List splitLine ->
+					if( 3 == splitLine.size() ) {
+						log.debug("${splitLine}" )
+						if( 0 == counter ) {
+							// red
+							device.r = 'On' == splitLine[1]
+						} else if( 1 == counter ) {
+							// yellow
+							device.y = 'On' == splitLine[1]
+						} else if( 2 == counter ) {
+							// green
+							device.g = 'On' == splitLine[1]
+						}
+						counter++
+					}
 				}
-				counter++
 			}
 		}
-		def exitValue = process.waitFor()
 
-		// check the exit value
-		if( 0 == exitValue ) {
-			return device
-		} else {
-			throw new DeviceNotFoundException("It looks like there is no device with id ${id}.")
-		}
 	}
+	/**
+	 * Creates  and initializes a TrafficLightsDevice.
+	 */
+	TrafficLightsDevice createTrafficLightsDevice(int id) {
+		log.info("Creating traffic lights device.")
+
+		def creator = new TrafficLightsDeviceCreator(new TrafficLightsDevice(id: id))
+
+		clewarecontrol(id, "-rs 0 -rs 1 -rs 2", creator.outputProcessor())
+
+		creator.device
+	}
+
 
 	/**
 	 * This will update all three switches of the device
@@ -130,33 +149,44 @@ class ClewareControl {
 	 * @param device
 	 */
 	def updateTrafficLights(TrafficLightsDevice device) {
-		Process process = clewarecontrol "-c", "1", "-d", "${device.id}",
-		                                 "-as", "0", "${device.r?1:0}",
-		                                 "-as", "1", "${device.y?1:0}",
-		                                 "-as", "2", "${device.g?1:0}"
-		process.inputStream.eachLine { line ->
+		clewarecontrol(device.id, "-as 0 ${device.r?1:0} -as 1 ${device.y?1:0} -as 2 ${device.g?1:0}") {
+			eachLine { line ->
 				log.debug "${line}"
-		}
-		def exitValue = process.waitFor()
-
-		// check the exit value
-		if((0 != exitValue)) {
-			throw new DeviceNotFoundException("It looks like there is no device with id ${device.id}.")
+			}
 		}
 	}
 
-	private clewarecontrol(String... cmd) {
-		def process
+	/**
+	 * This is actually going to start the native process and process its output.
+	 *
+	 * @param deviceId (optional) If provided will be used to identify the device
+	 * @param cmd The actual command to be called
+	 * @param outputParser A closure which delegate will become the input stream of the started process. The closure is
+	 *                     mandatory!
+	 */
+	private clewarecontrol(deviceId = -1, String cmd, Closure outputParser) {
+		Process process
+
+		if( -1 != deviceId ) {
+			cmd = "-c 1 -d ${deviceId} ${cmd}"
+		}
+
 		try {
-			// convert the array into a list for easy processing
-			def list = cmd as List
-			list.add 0, "clewarecontrol"
-			process = starter.start(list as String[])
+			process = starter.start "clewarecontrol ${cmd}".split()
 		} catch (e) {
 			log.error("Something went wrong when calling the binary.", e);
 			throw new BinaryNotFoundException("Clewarecontrol binary not found. Are you sure you installed it?",
 			                                  e.getCause())
 		}
-		process
+		// do what ever is wanted
+		process.inputStream.with outputParser
+
+		// check the exit value
+		if((0 != process.waitFor())) {
+			if(-1 != deviceId)
+				throw new DeviceNotFoundException("It looks like there is no device with id ${deviceId}.")
+			// TODO: add an else exception
+		}
 	}
+
 }

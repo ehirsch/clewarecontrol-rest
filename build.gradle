@@ -50,10 +50,13 @@ if( hasProperty("testResultsDir")) {
 	test.reports.junitXml.destination = testResultsDir
 }
 
-if( hasProperty("coverageOutputDatafile")) {
-	def coverageDir = file(new File("${coverageOutputDir}"))
-	coverageDir.mkdirs()
-	cobertura.coverageOutputDatafile = file( new File(coverageDir, 'result.sid'))
+// set up code coverage reporting for shippable
+if( hasProperty("coverageReportDir")) {
+	cobertura.coverageReportDir = file(new File("${coverageReportDir}"))
+}
+
+cobertura {
+	coverageFormats = ['xml', 'html']
 }
 
 // make check depend on coverage

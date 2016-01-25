@@ -8,16 +8,7 @@ jdk:
 # The path for Xunit to output test reports
 env:
   - ORG_GRADLE_PROJECT_testResultsDir=shippable/testresults
-
-# Create directories for test and coverage reports
-before_script:
-      #- mkdir -p shippable/testresults -> gradle will du this automatically.
-      #- mkdir -p shippable/codecoverage
-
-# Tell istanbul to generate a coverage report
-#after_script:
-     #- ./node_modules/.bin/istanbul cover grunt -- -u tdd
-     #- ./node_modules/.bin/istanbul report cobertura --dir  shippable/codecoverage/
+  - ORG_GRADLE_PROJECT_coverageOutputDir=shippable/codecoverage
 
 notifications:
   email:

@@ -50,6 +50,17 @@ if( hasProperty("testResultsDir")) {
 	test.reports.junitXml.destination = testResultsDir
 }
 
+if( hasProperty("coverageOutputDatafile")) {
+	def coverageDir = file(new File("${coverageOutputDir}"))
+	coverageDir.mkdirs()
+	cobertura.coverageOutputDatafile = file( new File(coverageDir, 'result.sid'))
+}
+
+// make check depend on coverage
+//noinspection GroovyAssignabilityCheck
+check.dependsOn 'cobertura'
+
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.10'
 }

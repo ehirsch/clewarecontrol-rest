@@ -35,16 +35,6 @@ class ClewareControlTest {
 		starterMock
 	}
 	
-	void mockClewareControlList() {
-		mockClewareControl(["clewarecontrol", "-l"], """
-			Cleware library version: 330
-			Number of Cleware devices found: 3
-			Device: 0, type: Switch1 (8), version: 106, serial number: 902492
-			Device: 1, type: Switch1 (8), version: 106, serial number: 902493
-			Device: 2, type: Unknown, version: 106, serial number: 902494
-			""")
-	}
-
 	private mockClewareControl(commandLine, commandOutput) {
 		Process processMock = mockProcess(0, commandOutput)
 		ProcessStarter processStarterMock = mockProcessStarter(commandLine, processMock)
@@ -89,7 +79,7 @@ class ClewareControlTest {
 
 	@Test
 	void listAllDevicesAreReturned(){
-		mockClewareControlList()
+		ctrl = new ClewareControl(StubUtils.processStarterStub)
 		def list = ctrl.listDevices()
 
 		assert list.size() == 3
@@ -97,8 +87,10 @@ class ClewareControlTest {
 
 	@Test
 	void listAllDevicesAreInitialized(){
-		mockClewareControlList()
+		ctrl = new ClewareControl(StubUtils.processStarterStub)
 		def list = ctrl.listDevices()
+
+		println list
 
 		assert list[0].id == 902492
 		assert list[1].id == 902493
@@ -107,7 +99,7 @@ class ClewareControlTest {
 
 	@Test
 	void listShouldCreateDevicesOfCorrectType(){
-		mockClewareControlList()
+		ctrl = new ClewareControl(StubUtils.processStarterStub)
 		def list = ctrl.listDevices()
 
 		assert list[0] instanceof TrafficLightsDevice
@@ -118,7 +110,7 @@ class ClewareControlTest {
 
 	@Test
 	void listShouldBeAbleToFilterDevicesByType(){
-		mockClewareControlList()
+		ctrl = new ClewareControl(StubUtils.processStarterStub)
 		def list = ctrl.listDevices(TrafficLightsDevice.class)
 
 		assert list.size() == 2

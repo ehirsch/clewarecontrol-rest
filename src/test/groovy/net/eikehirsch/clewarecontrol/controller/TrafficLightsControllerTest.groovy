@@ -26,8 +26,8 @@ class TrafficLightsControllerTest extends ClewareControlAppTests {
 
 	@Test
 	void infoShouldProvideSomeInformationAndLinks() {
-		mockMvc.perform(get("/trafficLights").accept("application/hal+json"))
-				.andExpect(content().contentTypeCompatibleWith("application/hal+json"))
+		mockMvc.perform(get("/trafficLights"))
+				.andExpect(content().contentTypeCompatibleWith("application/*+json"))
 				.andExpect(jsonPath('title').exists())
 				.andExpect(jsonPath('text').exists())
 				.andExpect(jsonPath('_links').exists())
@@ -35,8 +35,8 @@ class TrafficLightsControllerTest extends ClewareControlAppTests {
 
 	@Test
 	void infoShouldProvideSomeInformationAndLinks_trailingSlash() {
-		mockMvc.perform(get("/trafficLights/").accept("application/hal+json"))
-				.andExpect(content().contentTypeCompatibleWith("application/hal+json"))
+		mockMvc.perform(get("/trafficLights/"))
+				.andExpect(content().contentTypeCompatibleWith("application/*+json"))
 				.andExpect(jsonPath('title').exists())
 				.andExpect(jsonPath('text').exists())
 				.andExpect(jsonPath('_links').exists())
@@ -45,7 +45,7 @@ class TrafficLightsControllerTest extends ClewareControlAppTests {
 	@Test
 	@Ignore
 	void infoEmbedsLinksToAllTrafficLights() {
-		mockMvc.perform(get("/trafficLights").accept("application/hal+json"))
+		mockMvc.perform(get("/trafficLights"))
 				.andExpect(jsonPath('$._embedded').exists())
 				.andExpect(jsonPath('$._embedded.trafficLights').exists())
 				.andExpect(jsonPath('$._embedded.trafficLights[*].id', containsInAnyOrder(902492,902493)))
@@ -60,7 +60,7 @@ class TrafficLightsControllerTest extends ClewareControlAppTests {
 	@Test
 	void shouldReturnStatusOfAllLightsWhenASingleDeviceIsRequested() {
 		// requesting a single device means: GET + id
-		mockMvc.perform(get("/trafficLights/902492").accept("application/hal+json"))
+		mockMvc.perform(get("/trafficLights/902492"))
 				.andExpect(jsonPath('$.id', equalTo(902492)))
 				.andExpect(jsonPath('$.r', equalTo(false)))
 				.andExpect(jsonPath('$.y', equalTo(false)))
@@ -71,14 +71,14 @@ class TrafficLightsControllerTest extends ClewareControlAppTests {
 	@Test
 	void shouldReturnNotFoundForUnknownIdOnGet() {
 		// requesting a single device means: GET + id
-		mockMvc.perform(get("/trafficLights/123456").accept("application/hal+json"))
+		mockMvc.perform(get("/trafficLights/123456"))
 				.andExpect(status().is(404))
 	}
 
 	@Test
 	void shouldReturnBadRequestForInvalidIdOnGet() {
 		// requesting a single device means: GET + id
-		mockMvc.perform(get("/trafficLights/abcdef").accept("application/hal+json"))
+		mockMvc.perform(get("/trafficLights/abcdef"))
 				.andExpect(status().is(400))
 	}
 
@@ -96,7 +96,7 @@ class TrafficLightsControllerTest extends ClewareControlAppTests {
 		mockMvc.perform(put("/trafficLights/{id}", 902492)
 				                .contentType(MediaType.APPLICATION_JSON)
 				                .content(json.toString())
-				                .accept("application/hal+json"))
+				                )
 				.andDo(print())
 				.andExpect(status().is(202)) // accepted
 		// TODO: do we need to check the outcome?

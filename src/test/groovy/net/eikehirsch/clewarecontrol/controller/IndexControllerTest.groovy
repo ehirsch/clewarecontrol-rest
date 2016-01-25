@@ -18,8 +18,8 @@ public class IndexControllerTest extends ClewareControlAppTests {
 
 	@Test
 	void infoShouldProvideSomeInformationAndLinks() {
-		mockMvc.perform(get("/").accept("application/hal+json"))
-				.andExpect(content().contentTypeCompatibleWith("application/hal+json"))
+		mockMvc.perform(get("/"))
+				.andExpect(content().contentTypeCompatibleWith("application/*+json"))
 				.andExpect(jsonPath('title').exists())
 				.andExpect(jsonPath('text').exists())
 				.andExpect(jsonPath('_links').exists())
@@ -27,7 +27,7 @@ public class IndexControllerTest extends ClewareControlAppTests {
 
 	@Test
 	void infoContainsLinksToSelfAndTrafficLights() {
-		mockMvc.perform(get("/").accept("application/hal+json"))
+		mockMvc.perform(get("/"))
 				.andExpect(jsonPath('$._links.self').exists())
 				.andExpect(jsonPath('$._links.trafficLights').exists())
 	}

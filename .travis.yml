@@ -1,0 +1,11 @@
+language: groovy
+
+jdk:
+   - openjdk7
+   - oraclejdk7
+   - oraclejdk8
+
+notifications:
+  email:
+    recipients:
+      - me@eike-hirsch.net

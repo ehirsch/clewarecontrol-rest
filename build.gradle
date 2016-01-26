@@ -43,22 +43,13 @@ dependencies {
 	testCompile 'com.jayway.jsonpath:json-path:2.1.0'
 }
 
-// for shippable we want to redirect some outputs
-//if( hasProperty("testResultsDir")) {
-//	test.reports.junitXml.destination = testResultsDir
-//}
-
-//// set up code coverage reporting for shippable
-//if( hasProperty("coverageReportDir")) {
-//	cobertura.coverageReportDir = file(new File("${coverageReportDir}"))
-//}
-//
-//cobertura {
-//	coverageFormats = ['xml', 'html']
-//	coverageSourceDirs = sourceSets.main.groovy.srcDirs
-//}
-//
-//// make check depend on coverage
+// make check depend on coverage
+jacocoTestReport {
+	reports {
+		xml.enabled = true
+		html.enabled = true
+	}
+}
 check.dependsOn 'jacocoTestReport'
 
 

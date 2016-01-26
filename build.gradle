@@ -59,8 +59,7 @@ dependencies {
 //}
 //
 //// make check depend on coverage
-////noinspection GroovyAssignabilityCheck
-//check.dependsOn 'cobertura'
+check.dependsOn 'jacocoTestReport'
 
 
 task wrapper(type: Wrapper) {

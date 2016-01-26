@@ -11,14 +11,12 @@ buildscript {
     }
 }
 
-plugins {
-	id 'net.saliman.cobertura' version '2.3.0'
-}
 
 apply plugin: 'groovy'
 apply plugin: 'spring-boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'idea'
+apply plugin: "jacoco"
 
 jar {
     baseName = 'clewarecontrol-rest'
@@ -46,22 +44,23 @@ dependencies {
 }
 
 // for shippable we want to redirect some outputs
-if( hasProperty("testResultsDir")) {
-	test.reports.junitXml.destination = testResultsDir
-}
+//if( hasProperty("testResultsDir")) {
+//	test.reports.junitXml.destination = testResultsDir
+//}
 
-// set up code coverage reporting for shippable
-if( hasProperty("coverageReportDir")) {
-	cobertura.coverageReportDir = file(new File("${coverageReportDir}"))
-}
-
-cobertura {
-	coverageFormats = ['xml', 'html']
-}
-
-// make check depend on coverage
-//noinspection GroovyAssignabilityCheck
-check.dependsOn 'cobertura'
+//// set up code coverage reporting for shippable
+//if( hasProperty("coverageReportDir")) {
+//	cobertura.coverageReportDir = file(new File("${coverageReportDir}"))
+//}
+//
+//cobertura {
+//	coverageFormats = ['xml', 'html']
+//	coverageSourceDirs = sourceSets.main.groovy.srcDirs
+//}
+//
+//// make check depend on coverage
+////noinspection GroovyAssignabilityCheck
+//check.dependsOn 'cobertura'
 
 
 task wrapper(type: Wrapper) {

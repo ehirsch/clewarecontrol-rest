@@ -9,3 +9,9 @@ notifications:
   email:
     recipients:
       - me@eike-hirsch.net
+
+before_install:
+  - pip install --user codecov
+
+after_success:
+  - codecov

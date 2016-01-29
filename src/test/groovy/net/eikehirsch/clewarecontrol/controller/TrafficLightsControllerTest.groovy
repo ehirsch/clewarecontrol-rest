@@ -2,6 +2,7 @@ package net.eikehirsch.clewarecontrol.controller
 import groovy.json.JsonBuilder
 import groovy.util.logging.Slf4j
 import net.eikehirsch.clewarecontrol.ClewareControlAppTests
+import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.springframework.http.MediaType
@@ -10,13 +11,19 @@ import static org.hamcrest.Matchers.containsInAnyOrder
 import static org.hamcrest.Matchers.equalTo
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 /**
  * This will test the IndexController against the text fixture defined in {@link ClewareControlAppTests}.
  */
 @Slf4j
 class TrafficLightsControllerTest extends ClewareControlAppTests {
+
+	private json
+
+	@Before
+	public void setUp ( ) throws Exception {
+		json = new JsonBuilder()
+	}
 
 	@Test
 	public void testIndex() throws Exception {
@@ -84,10 +91,9 @@ class TrafficLightsControllerTest extends ClewareControlAppTests {
 
 	// GET TODO: HAL
 
-	// PUT + {r:0|1,y:0|1,g:0|1} -> 204 or 200?
+	// PUT + {r:0|1,y:0|1,g:0|1} -> 202
 	@Test
-	void shouldReturnAcceptedWhen() {
-		def json = new JsonBuilder()
+	void shouldReturnAcceptedWhenACompleteTrafficLightsSetIsPushed() {
 		json {
 			r true
 			y false
@@ -95,12 +101,52 @@ class TrafficLightsControllerTest extends ClewareControlAppTests {
 		}
 		mockMvc.perform(put("/trafficLights/{id}", 902492)
 				                .contentType(MediaType.APPLICATION_JSON)
-				                .content(json.toString())
-				                )
-				.andDo(print())
+				                .content(json.toString()))
 				.andExpect(status().is(202)) // accepted
-		// TODO: do we need to check the outcome?
 	}
+
+	// PUT + {g:0|1} -> 202
+	@Test
+	void shouldReturnAcceptedWhenPartsArePushed() {
+		json {
+			g true
+		}
+		mockMvc.perform(put("/trafficLights/{id}", 902492)
+				                .contentType(MediaType.APPLICATION_JSON)
+				                .content(this.json.toString()))
+				.andExpect(status().is(202)) // accepted
+	}
+
+	// PUT invalid
+	@Test
+	void shouldReturnBadRequestWhenBodyIsMissing() {
+		mockMvc.perform(put("/trafficLights/{id}", 902492)
+				                .contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is(400)) // bad request
+	}
+
+	@Test
+	void shouldReturnBadRequestWhenInvalidIdIsPassed() {
+		json {
+			g true
+		}
+		mockMvc.perform(put("/trafficLights/{id}", 'abc')
+				                .contentType(MediaType.APPLICATION_JSON)
+				                .content(this.json.toString()))
+				.andExpect(status().is(400))
+	}
+
+	@Test
+	void shouldReturnNotFoundWhenUnknownIdIsPassed() {
+		json {
+			g true
+		}
+		mockMvc.perform(put("/trafficLights/{id}", 123456)
+				                .contentType(MediaType.APPLICATION_JSON)
+				                .content(this.json.toString()))
+				.andExpect(status().is(404))
+	}
+
 
 	// POST -> 405 "Method not allowed" + HEADER "Allowed" GET, PUT,
 	// DELETE -> 405 "Method not allowed" + HEADER "Allowed" GET, PUT,

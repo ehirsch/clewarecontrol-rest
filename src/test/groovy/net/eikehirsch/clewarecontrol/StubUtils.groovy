@@ -33,7 +33,7 @@ class StubUtils {
 										Status: On (1)
 									""")
 					break;
-				case ~/.*-c 1 -d 123456 -rs 0 -rs 1 -rs 2/:
+				case ~/.*-c 1 -d 123456 .*/:
 					process = ClewareControlTest.mockProcess(1, """
 										Device 123456 not found
 										errno at that time: Bad file descriptor (9)

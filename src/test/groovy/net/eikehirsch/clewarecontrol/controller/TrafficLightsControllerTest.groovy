@@ -6,11 +6,11 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 
 import static org.hamcrest.Matchers.containsInAnyOrder
 import static org.hamcrest.Matchers.equalTo
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 /**
  * This will test the IndexController against the text fixture defined in {@link ClewareControlAppTests}.
@@ -58,8 +58,6 @@ class TrafficLightsControllerTest extends ClewareControlAppTests {
 				.andExpect(jsonPath('$._embedded.trafficLights[*].id', containsInAnyOrder(902492,902493)))
 	}
 
-	// clewarecontrol -c 1 -d 902492 -as 2 0
-
 	// API
 	// The test setup created two traffic light devices. For our tests we simply use the first one.
 	// id is : 902492
@@ -74,7 +72,7 @@ class TrafficLightsControllerTest extends ClewareControlAppTests {
 				.andExpect(jsonPath('$.g', equalTo(true)))
 	}
 
-	// GET with invalid ids
+	// -- GET with invalid ids
 	@Test
 	void shouldReturnNotFoundForUnknownIdOnGet() {
 		// requesting a single device means: GET + id
@@ -91,7 +89,7 @@ class TrafficLightsControllerTest extends ClewareControlAppTests {
 
 	// GET TODO: HAL
 
-	// PUT + {r:0|1,y:0|1,g:0|1} -> 202
+	// -- PUT + {r:0|1,y:0|1,g:0|1} -> 202
 	@Test
 	void shouldReturnAcceptedWhenACompleteTrafficLightsSetIsPushed() {
 		json {
@@ -105,7 +103,7 @@ class TrafficLightsControllerTest extends ClewareControlAppTests {
 				.andExpect(status().is(202)) // accepted
 	}
 
-	// PUT + {g:0|1} -> 202
+	// -- PUT + {g:0|1} -> 202
 	@Test
 	void shouldReturnAcceptedWhenPartsArePushed() {
 		json {
@@ -117,7 +115,7 @@ class TrafficLightsControllerTest extends ClewareControlAppTests {
 				.andExpect(status().is(202)) // accepted
 	}
 
-	// PUT invalid
+	// -- PUT invalid
 	@Test
 	void shouldReturnBadRequestWhenBodyIsMissing() {
 		mockMvc.perform(put("/trafficLights/{id}", 902492)
@@ -147,7 +145,48 @@ class TrafficLightsControllerTest extends ClewareControlAppTests {
 				.andExpect(status().is(404))
 	}
 
+	// -- unsupported methods
+	// POST -> 405 "Method not allowed" + HEADER "Allowed" GET, PUT
+	@Test
+	void shouldReturnMethodNotAllowedForPostRequests() {
+		mockMvc.perform(post("/trafficLights")
+				                .contentType(MediaType.APPLICATION_JSON))
+		.andDo(MockMvcResultHandlers.print())
+				.andExpect(status().is(405))
+	}
 
-	// POST -> 405 "Method not allowed" + HEADER "Allowed" GET, PUT,
-	// DELETE -> 405 "Method not allowed" + HEADER "Allowed" GET, PUT,
+	@Test
+	void shouldReturnMethodNotAllowedForPostRequestsWithAnyPayload() {
+		json {
+			g true
+		}
+
+		mockMvc.perform(post("/trafficLights/123")
+				                .contentType(MediaType.APPLICATION_JSON)
+				                .content(this.json.toString()))
+		.andDo(MockMvcResultHandlers.print())
+				.andExpect(status().is(405))
+	}
+
+	@Test
+	void shouldReturnMethodNotAllowedForDeleteRequests() {
+		mockMvc.perform(delete("/trafficLights").contentType(MediaType.APPLICATION_JSON))
+				.andDo(MockMvcResultHandlers.print())
+				.andExpect(status().is(405))
+	}
+
+	@Test
+	void shouldReturnMethodNotAllowedForPatchRequests() {
+		mockMvc.perform(patch("/trafficLights").contentType(MediaType.APPLICATION_JSON))
+				.andDo(MockMvcResultHandlers.print())
+				.andExpect(status().is(405))
+	}
+
+	@Test
+	void shouldReturnMethodNotAllowedForHeadRequests() {
+		mockMvc.perform(head("/trafficLights").contentType(MediaType.APPLICATION_JSON))
+				.andDo(MockMvcResultHandlers.print())
+				.andExpect(status().is(405))
+	}
+
 }

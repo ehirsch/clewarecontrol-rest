@@ -1,7 +1,7 @@
 package net.eikehirsch.clewarecontrol.trafficlights
-
 import groovy.util.logging.Slf4j
 import net.eikehirsch.clewarecontrol.ClewareControl
+import net.eikehirsch.clewarecontrol.exception.MethodNotSupportedException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.hateoas.ExposesResourceFor
 import org.springframework.hateoas.mvc.ControllerLinkBuilder
@@ -42,7 +42,7 @@ class TrafficLightsController {
 	  new ResponseEntity(info, HttpStatus.OK)
   }
 
-  @RequestMapping("/{id}")
+  @RequestMapping(value="/{id}", method = RequestMethod.GET)
   ResponseEntity<TrafficLightsDevice> get(@PathVariable int id) {
 	  new ResponseEntity(clewareControl.createTrafficLightsDevice(id), HttpStatus.OK)
   }
@@ -57,5 +57,18 @@ class TrafficLightsController {
 	  clewareControl.updateTrafficLights device
 	  new ResponseEntity(HttpStatus.ACCEPTED)
   }
+
+	/**
+	 * Handle unsupported requests
+	 */
+	@RequestMapping(method = [
+			RequestMethod.POST,
+			RequestMethod.DELETE,
+			RequestMethod.PATCH,
+			RequestMethod.HEAD
+	])
+	void unsupported() {
+		throw new MethodNotSupportedException("try GET or PUT")
+	}
 
 }

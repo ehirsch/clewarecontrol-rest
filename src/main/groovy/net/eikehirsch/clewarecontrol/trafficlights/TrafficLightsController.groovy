@@ -1,13 +1,13 @@
 package net.eikehirsch.clewarecontrol.trafficlights
 import groovy.util.logging.Slf4j
 import net.eikehirsch.clewarecontrol.ClewareControl
-import net.eikehirsch.clewarecontrol.exception.MethodNotSupportedException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.hateoas.ExposesResourceFor
 import org.springframework.hateoas.mvc.ControllerLinkBuilder
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
+import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -67,8 +67,11 @@ class TrafficLightsController {
 			RequestMethod.PATCH,
 			RequestMethod.HEAD
 	])
-	void unsupported() {
-		throw new MethodNotSupportedException("try GET or PUT")
+	ResponseEntity unsupported() {
+		def headers = new LinkedMultiValueMap<String, String>()
+		headers.add('Allow', 'GET')
+		headers.add('Allow', 'PUT')
+		new ResponseEntity(headers, HttpStatus.METHOD_NOT_ALLOWED)
 	}
 
 }

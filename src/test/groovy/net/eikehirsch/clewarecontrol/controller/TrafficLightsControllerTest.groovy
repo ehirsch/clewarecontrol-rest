@@ -6,7 +6,6 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 
 import static org.hamcrest.Matchers.containsInAnyOrder
 import static org.hamcrest.Matchers.equalTo
@@ -146,13 +145,13 @@ class TrafficLightsControllerTest extends ClewareControlAppTests {
 	}
 
 	// -- unsupported methods
-	// POST -> 405 "Method not allowed" + HEADER "Allowed" GET, PUT
+	// POST -> 405 "Method not allowed" + HEADER "Allow" GET, PUT
 	@Test
 	void shouldReturnMethodNotAllowedForPostRequests() {
 		mockMvc.perform(post("/trafficLights")
 				                .contentType(MediaType.APPLICATION_JSON))
-		.andDo(MockMvcResultHandlers.print())
 				.andExpect(status().is(405))
+//				.andExpect(header().stringValues('Allow', 'GET', 'PUT')) // TODO: wait for the next spring update
 	}
 
 	@Test
@@ -164,28 +163,24 @@ class TrafficLightsControllerTest extends ClewareControlAppTests {
 		mockMvc.perform(post("/trafficLights/123")
 				                .contentType(MediaType.APPLICATION_JSON)
 				                .content(this.json.toString()))
-		.andDo(MockMvcResultHandlers.print())
 				.andExpect(status().is(405))
 	}
 
 	@Test
 	void shouldReturnMethodNotAllowedForDeleteRequests() {
 		mockMvc.perform(delete("/trafficLights").contentType(MediaType.APPLICATION_JSON))
-				.andDo(MockMvcResultHandlers.print())
 				.andExpect(status().is(405))
 	}
 
 	@Test
 	void shouldReturnMethodNotAllowedForPatchRequests() {
 		mockMvc.perform(patch("/trafficLights").contentType(MediaType.APPLICATION_JSON))
-				.andDo(MockMvcResultHandlers.print())
 				.andExpect(status().is(405))
 	}
 
 	@Test
 	void shouldReturnMethodNotAllowedForHeadRequests() {
 		mockMvc.perform(head("/trafficLights").contentType(MediaType.APPLICATION_JSON))
-				.andDo(MockMvcResultHandlers.print())
 				.andExpect(status().is(405))
 	}
 

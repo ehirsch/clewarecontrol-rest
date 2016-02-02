@@ -10,8 +10,56 @@ This is a small http://projects.spring.io/spring-boot/[Springboot^] app written 
 
 If you never heard about http://www.cleware-shop.de/[Cleware^] or https://github.com/flok99/clewarecontrol[clewarecontrol^] check them out.
 
-== Usage
+== How to run
+
+In any case you need to have at least one Cleware device connected to the host this is running on.
+
+=== From source
+
+Clone this repository and call
+
+[source:bash]
+----
+./gradlew bootRun
+----
+This will start a server on port 8080. You can check it by navigating your browser to:
+
+ http://localhost:8080
+
+
+=== From binary
 
 TBD
+
+=== With docker
+
+TBD
+
+== Usage
+
+NOTE: In a future Version (read: 0.2) this will be replaced by a 'real' usage guide using Spring-REST-Doc
+
+For the time being there is only one endpoint:
+
+ GET /trafficLights
+
+Will list links to each "USB-Ampel" connected to the host running this app.
+
+ GET /trafficLights/<id>
+
+Will provide the state of a concrete traffic light. (<id> is the actual id of the device).
+
+ PUT /trafficLights/<id>
+ {
+  "r":true|false,
+  "y":true|false,
+  "g":true|false
+ }
+
+Will set the state of the identified device.
+
+
+
+
 
 

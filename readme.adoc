@@ -5,6 +5,7 @@
 image:https://travis-ci.org/ehirsch/clewarecontrol-rest.svg?branch=master["Build Status", link="https://travis-ci.org/ehirsch/clewarecontrol-rest"]
 image:https://codecov.io/github/ehirsch/clewarecontrol-rest/coverage.svg?branch=master["Code Coverage", link="https://codecov.io/github/ehirsch/clewarecontrol-rest?branch=master"]
 image:https://badge.waffle.io/ehirsch/clewarecontrol-rest.png?label=ready&title=Ready[link="http://waffle.io/ehirsch/clewarecontrol-rest"]
+image:https://img.shields.io/:license-MIT-blue.svg[link="LICENSE.adoc"]
 
 This is a small http://projects.spring.io/spring-boot/[Springboot^] app written in Groovy. It provides a RESTful API for USB-devices from the _cleware GmbH_ by utilizing the clewarecontrol binary created by https://www.vanheusden.com/[Folkert van Heusden^].
 

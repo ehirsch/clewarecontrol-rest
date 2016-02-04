@@ -13,6 +13,7 @@ buildscript {
 
 plugins {
 	id 'de.ploing.scmversion' version '0.6.5'
+	id 'com.jfrog.bintray' version '1.5'
 }
 
 apply plugin: 'groovy'
@@ -54,6 +55,21 @@ check.dependsOn 'jacocoTestReport'
 
 scmversion {
 	releaseTagPattern = 'v([0-9.]*)'
+}
+
+bintray {
+	user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+	key = project.hasProperty('bintrayAPIKey') ? project.property('bintrayAPIKey') : System.getenv('BINTRAY_API_KEY')
+	configurations = ['archives']
+	pkg {
+		repo = 'maven'
+		name = project.name
+		licenses = ['MIT']
+		vcsUrl = 'https://github.com/ehirsch/clewarecontrol-rest.git'
+		version {
+			name = project.version
+		}
+	}
 }
 
 

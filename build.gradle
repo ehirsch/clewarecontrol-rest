@@ -66,10 +66,15 @@ bintray {
 		name = project.name
 		licenses = ['MIT']
 		vcsUrl = 'https://github.com/ehirsch/clewarecontrol-rest.git'
+		//noinspection GroovyAssignabilityCheck
 		version {
 			name = project.version
 		}
 	}
+}
+
+task dumpVersion << {
+	println version
 }
 
 

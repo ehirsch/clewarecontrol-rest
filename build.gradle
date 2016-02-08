@@ -31,7 +31,7 @@ scmVersion {
 		prefix = 'version'
 	}
 	repository {
-		customKey = project.hasProperty('gitHubReleaseToken') ? project.property('gitHubReleaseToken') :
+		customPassword = project.hasProperty('gitHubReleaseToken') ? project.property('gitHubReleaseToken') :
 				System.getenv('GITHUB_RELEASE_TOKEN')
 	}
 }

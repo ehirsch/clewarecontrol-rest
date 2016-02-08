@@ -22,13 +22,19 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'idea'
 apply plugin: "jacoco"
 
+ext {
+	userHome = System.properties['user.home']
+}
 
 scmVersion {
 	tag {
 		prefix = 'version'
 	}
+	repository {
+		customKey = file("$userHome/.ssh/id_rsa.pub")
+	}
 }
-project.version = scmVersion.version
+version = scmVersion.version
 
 //noinspection GroovyUnusedAssignment
 targetCompatibility = 1.7

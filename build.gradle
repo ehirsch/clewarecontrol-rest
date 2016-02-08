@@ -31,7 +31,8 @@ scmVersion {
 		prefix = 'version'
 	}
 	repository {
-		customKey = file("$userHome/.ssh/id_rsa.pub")
+		customKey = project.hasProperty('gitHubReleaseToken') ? project.property('gitHubReleaseToken') :
+				System.getenv('GITHUB_RELEASE_TOKEN')
 	}
 }
 version = scmVersion.version

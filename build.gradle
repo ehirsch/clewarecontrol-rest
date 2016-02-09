@@ -85,10 +85,12 @@ bintray {
 	}
 }
 
-task dumpVersion << {
-	println version
+// only publish release versions
+task publish {
+	onlyIf {
+		-1 == version.toString().indexOf('SNAPSHOT')
+	}
 }
-
 
 task wrapper(type: Wrapper) {
 	gradleVersion = '2.10'

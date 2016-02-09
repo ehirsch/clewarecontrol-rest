@@ -85,11 +85,9 @@ bintray {
 	}
 }
 
-// only publish release versions
-task publish {
-	onlyIf {
-		!version.toString().contains("SNAPSHOT")
-	}
+//// only publish release versions
+bintrayUpload.onlyIf {
+	!version.toString().contains("SNAPSHOT")
 }
 
 task wrapper(type: Wrapper) {

@@ -88,7 +88,7 @@ bintray {
 // only publish release versions
 task publish {
 	onlyIf {
-		-1 == version.toString().indexOf('SNAPSHOT')
+		!version.toString().contains("SNAPSHOT")
 	}
 }
 

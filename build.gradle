@@ -21,6 +21,7 @@ apply plugin: 'spring-boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'idea'
 apply plugin: "jacoco"
+apply plugin: "maven-publish"
 
 ext {
 	userHome = System.properties['user.home']
@@ -72,15 +73,34 @@ check.dependsOn 'jacocoTestReport'
 bintray {
 	user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
 	key = project.hasProperty('bintrayAPIKey') ? project.property('bintrayAPIKey') : System.getenv('BINTRAY_API_KEY')
-	configurations = ['archives']
+
+	publications = ['api']
+	publish = true
+
 	pkg {
 		repo = 'maven'
 		name = project.name
 		licenses = ['MIT']
 		vcsUrl = 'https://github.com/ehirsch/clewarecontrol-rest.git'
+		githubRepo = 'ehirsch/clewarecontrol-rest'
+		githubReleaseNotesFile = 'readme.adoc'
+
 		//noinspection GroovyAssignabilityCheck
 		version {
 			name = project.version
+			description = "A RESTful API for the clewarecontrol binary"
+			vcsTag = project.version
+		}
+	}
+}
+
+publishing {
+	publications {
+		api(MavenPublication) {
+			from components.java
+			groupId 'net.eikehirsch.clewarecontrol'
+			artifactId 'clewarecontrol-rest'
+			version project.version
 		}
 	}
 }

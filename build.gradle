@@ -82,8 +82,6 @@ bintray {
 		name = project.name
 		licenses = ['MIT']
 		vcsUrl = 'https://github.com/ehirsch/clewarecontrol-rest.git'
-		githubRepo = 'ehirsch/clewarecontrol-rest'
-		githubReleaseNotesFile = 'readme.adoc'
 
 		//noinspection GroovyAssignabilityCheck
 		version {

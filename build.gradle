@@ -92,6 +92,11 @@ bintray {
 	}
 }
 
+// creates a sources jar. This is needed if we want to be published on jcenter.
+task sourceJar(type: Jar) {
+	from sourceSets.main.groovy
+}
+
 publishing {
 	publications {
 		api(MavenPublication) {
@@ -99,6 +104,10 @@ publishing {
 			groupId 'net.eikehirsch.clewarecontrol'
 			artifactId 'clewarecontrol-rest'
 			version project.version
+
+			artifact sourceJar {
+				classifier "sources"
+			}
 		}
 	}
 }

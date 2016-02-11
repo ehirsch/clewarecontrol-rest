@@ -81,6 +81,7 @@ springBoot {
 // creates a sources jar. This is needed if we want to be published on jcenter.
 task sourceJar(type: Jar) {
 	from sourceSets.main.groovy
+	classifier "sources"
 }
 
 publishing {
@@ -91,9 +92,7 @@ publishing {
 			artifactId 'clewarecontrol-rest'
 			version project.version
 
-			artifact sourceJar {
-				classifier "sources"
-			}
+			artifact sourceJar
 		}
 	}
 }
@@ -121,8 +120,10 @@ bintray {
 }
 
 // only publish release versions
-bintrayUpload.onlyIf {
-	!version.toString().contains("SNAPSHOT")
+// and publish the spring-boot executable jar.
+bintrayUpload {
+	onlyIf { !version.toString().contains("SNAPSHOT") }
+	dependsOn assemble
 }
 
 task wrapper(type: Wrapper) {

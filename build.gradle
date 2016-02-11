@@ -7,6 +7,7 @@ buildscript {
 	}
 	dependencies {
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+		// TODO: remove this, it's automatically applied by spring-boot-gradle
 		classpath 'io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE'
 	}
 }
@@ -70,26 +71,11 @@ jacocoTestReport {
 check.dependsOn 'jacocoTestReport'
 
 
-bintray {
-	user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-	key = project.hasProperty('bintrayAPIKey') ? project.property('bintrayAPIKey') : System.getenv('BINTRAY_API_KEY')
-
-	publications = ['api']
-	publish = true
-
-	pkg {
-		repo = 'maven'
-		name = project.name
-		licenses = ['MIT']
-		vcsUrl = 'https://github.com/ehirsch/clewarecontrol-rest.git'
-
-		//noinspection GroovyAssignabilityCheck
-		version {
-			name = project.version
-			description = "A RESTful API for the clewarecontrol binary"
-			vcsTag = project.version
-		}
-	}
+springBoot {
+	// we want the jar file to run as a unix service.
+	// s. https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html#deployment-service
+	// for more information
+	executable = true
 }
 
 // creates a sources jar. This is needed if we want to be published on jcenter.
@@ -112,7 +98,29 @@ publishing {
 	}
 }
 
-//// only publish release versions
+bintray {
+	user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+	key = project.hasProperty('bintrayAPIKey') ? project.property('bintrayAPIKey') : System.getenv('BINTRAY_API_KEY')
+
+	publications = ['api']
+	publish = true
+
+	pkg {
+		repo = 'maven'
+		name = project.name
+		licenses = ['MIT']
+		vcsUrl = 'https://github.com/ehirsch/clewarecontrol-rest.git'
+
+		//noinspection GroovyAssignabilityCheck
+		version {
+			name = project.version
+			description = "A RESTful API for the clewarecontrol binary"
+			vcsTag = project.version
+		}
+	}
+}
+
+// only publish release versions
 bintrayUpload.onlyIf {
 	!version.toString().contains("SNAPSHOT")
 }

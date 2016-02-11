@@ -3,6 +3,7 @@
 == A RESTful API for the clewarecontrol binary
 
 image:https://travis-ci.org/ehirsch/clewarecontrol-rest.svg?branch=master["Build Status", link="https://travis-ci.org/ehirsch/clewarecontrol-rest"]
+image:https://api.bintray.com/packages/ehirsch/maven/clewarecontrol-rest/images/download.svg[link="https://bintray.com/ehirsch/maven/clewarecontrol-rest/_latestVersion"]
 image:https://codecov.io/github/ehirsch/clewarecontrol-rest/coverage.svg?branch=master["Code Coverage", link="https://codecov.io/github/ehirsch/clewarecontrol-rest?branch=master"]
 image:https://badge.waffle.io/ehirsch/clewarecontrol-rest.png?label=ready&title=Ready[link="http://waffle.io/ehirsch/clewarecontrol-rest"]
 image:https://img.shields.io/:license-MIT-blue.svg[link="LICENSE.adoc"]
@@ -28,11 +29,26 @@ This will start a server on port 8080. You can check it by navigating your brows
  http://localhost:8080
 
 
-=== From binary
+=== From binary (you need to have java installed)
+
+Use the download badge at the top, find the downloaded jar file and call
+
+[source:bash]
+----
+./java -jar clewarecontrol-rest-<version>.jar
+----
+
+This will start a server on port 8080. You can check it by navigating your browser to:
+
+ http://localhost:8080
+
+*You can even run it as *nix service.* You simply have to follow this https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html#deployment-service[instructions^].
+
+=== With docker
 
 TBD
 
-=== With docker
+== Configuring the port
 
 TBD
 

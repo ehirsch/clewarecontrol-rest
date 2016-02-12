@@ -42,15 +42,28 @@ This will start a server on port 8080. You can check it by navigating your brows
 
  http://localhost:8080
 
-*You can even run it as *nix service.* You simply have to follow this https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html#deployment-service[instructions^].
+*You can even run it as a *nix service.* You simply have to follow this https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html#deployment-service[instructions^].
 
 === With docker
 
 TBD
 
-== Configuring the port
+== Configuring
 
-TBD
+Simply add the desired setting as an parameter when starting the service. Here you can see how you would configure
+the service to run on port 1337:
+
+[source:bash]
+----
+java -jar clewarecontrol-rest-<version>.jar --server.port=1337
+----
+
+As this is a spring boot application there are quite some things you can configure. Here is a list with the
+https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html[most common settings^].
+
+If you need other ways of configuration - there are a lot. Just read the
+https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html[configuration reference^].
+
 
 == Usage
 

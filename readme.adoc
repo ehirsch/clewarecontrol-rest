@@ -55,7 +55,7 @@ the service to run on port 1337:
 
 [source:bash]
 ----
-java -jar clewarecontrol-rest-<version>.jar --server.port=1337
+java -jar clewarecontrol-rest-0.0.10.jar --server.port=1337
 ----
 
 As this is a spring boot application there are quite some things you can configure. Here is a list with the

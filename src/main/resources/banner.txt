@@ -3,4 +3,4 @@
 |  _| | -_| | | | .'|  _| -_|  _| . |   |  _|  _| . | |___${AnsiColor.BRIGHT_GREEN}|    -|   __|__   | | |  ${AnsiColor.DEFAULT}
 |___|_|___|_____|__,|_| |___|___|___|_|_|_| |_| |___|_|   ${AnsiColor.BRIGHT_GREEN}|__|__|_____|_____| |_|  ${AnsiColor.DEFAULT}
 
-version: 0.0.9 ${AnsiColor.BRIGHT_BLACK}Copyright (c) 2016 Eike Hirsch${AnsiColor.DEFAULT}
+version: 0.0.10 ${AnsiColor.BRIGHT_BLACK}Copyright (c) 2016 Eike Hirsch${AnsiColor.DEFAULT}

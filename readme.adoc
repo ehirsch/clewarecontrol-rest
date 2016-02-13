@@ -35,7 +35,7 @@ Use the download badge at the top, find the downloaded jar file and call
 
 [source:bash]
 ----
-java -jar clewarecontrol-rest-0.0.9.jar
+java -jar clewarecontrol-rest-0.0.10.jar
 ----
 
 This will start a server on port 8080. You can check it by navigating your browser to:

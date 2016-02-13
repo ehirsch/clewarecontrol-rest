@@ -1,0 +1,6 @@
+     _                                   _           _    ${AnsiColor.BRIGHT_GREEN} _____ _____ _____ _____ ${AnsiColor.DEFAULT}
+ ___| |___ _ _ _ ___ ___ ___ ___ ___ ___| |_ ___ ___| |___${AnsiColor.BRIGHT_GREEN}| __  |   __|   __|_   _|${AnsiColor.DEFAULT}
+|  _| | -_| | | | .'|  _| -_|  _| . |   |  _|  _| . | |___${AnsiColor.BRIGHT_GREEN}|    -|   __|__   | | |  ${AnsiColor.DEFAULT}
+|___|_|___|_____|__,|_| |___|___|___|_|_|_| |_| |___|_|   ${AnsiColor.BRIGHT_GREEN}|__|__|_____|_____| |_|  ${AnsiColor.DEFAULT}
+
+version: 0.0.9 ${AnsiColor.BRIGHT_BLACK}Copyright (c) 2016 Eike Hirsch${AnsiColor.DEFAULT}

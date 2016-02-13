@@ -37,6 +37,11 @@ scmVersion {
 		customPassword = project.hasProperty('gitHubReleaseToken') ? project.property('gitHubReleaseToken') :
 				System.getenv('GITHUB_RELEASE_TOKEN')
 	}
+	hooks {
+		pre 'fileUpdate', [file: 'readme.adoc', pattern: {v, c -> /rest-$v/}, replacement: {v, c -> "rest-$v"}]
+		pre 'fileUpdate', [file: 'src/main/resources/banner.txt', pattern: {v, c -> /version: $v/}, replacement: {v, c -> "version: $v"}]
+		pre 'commit'
+	}
 }
 version = scmVersion.version
 

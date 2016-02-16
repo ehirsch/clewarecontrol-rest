@@ -7,6 +7,7 @@ buildscript {
 	}
 	dependencies {
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+		classpath "se.transmode.gradle:gradle-docker:1.2"
 		// TODO: remove this, it's automatically applied by spring-boot-gradle
 		classpath 'io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE'
 	}
@@ -23,6 +24,7 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'idea'
 apply plugin: "jacoco"
 apply plugin: "maven-publish"
+apply plugin: 'docker'
 
 ext {
 	userHome = System.properties['user.home']
@@ -129,6 +131,19 @@ bintray {
 bintrayUpload {
 	onlyIf { !version.toString().contains("SNAPSHOT") }
 	dependsOn assemble
+}
+
+
+task buildDocker(type: Docker, dependsOn: build) {
+	group = 'ehirsch' //project.hasProperty('dockerHubUser') ? project.property('dockerHubUser') : System.getenv('DOCKER_HUB_USER')
+	push = false
+	applicationName = jar.baseName
+
+	baseImage "smartsteuer/clewarecontrol-jre"
+	volume "/tmp"
+	addFile jar.archivePath, "/app.jar"
+	runCommand "bash -c 'touch /app.jar'"
+	entryPoint(["java","-Djava.security.egd=file:/dev/urandom","-jar","/app.jar"])
 }
 
 task wrapper(type: Wrapper) {

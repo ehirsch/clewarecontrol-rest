@@ -137,7 +137,7 @@ docker {
 	group = project.hasProperty('dockerUser') ? project.property('dockerUser') : System.getenv('DOCKER_USER')
 }
 
-task buildDocker(type: Docker, dependsOn: build) {
+task dockerPush(type: Docker, dependsOn: build) {
 	push = true
 	applicationName = jar.baseName
 

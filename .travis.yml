@@ -1,3 +1,5 @@
+sudo: required
+
 language: groovy
 
 jdk:
@@ -5,11 +7,18 @@ jdk:
    - oraclejdk7
    - oraclejdk8
 
+services:
+  - docker
+
+before_install:
+  - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USER" -p="$DOCKER_PASSWORD"
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+  - gradle buildDocker bintrayUpload
+
+
 notifications:
   email:
     recipients:
       - me@eike-hirsch.net
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
-  - gradle bintrayUpload

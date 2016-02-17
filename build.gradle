@@ -133,12 +133,15 @@ bintrayUpload {
 	dependsOn assemble
 }
 
+docker {
+	group = project.hasProperty('dockerUser') ? project.property('dockerUser') : System.getenv('DOCKER_USER')
+}
 
 task buildDocker(type: Docker, dependsOn: build) {
-	group = 'ehirsch' //project.hasProperty('dockerHubUser') ? project.property('dockerHubUser') : System.getenv('DOCKER_HUB_USER')
-	push = false
+	push = true
 	applicationName = jar.baseName
 
+	// Dockerfile
 	baseImage "smartsteuer/clewarecontrol-jre"
 	volume "/tmp"
 	addFile jar.archivePath, "/app.jar"

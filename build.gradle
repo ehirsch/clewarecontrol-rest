@@ -7,7 +7,6 @@ buildscript {
 	}
 	dependencies {
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-//		classpath "se.transmode.gradle:gradle-docker:1.2"
 		classpath 'com.bmuschko:gradle-docker-plugin:2.6.5'
 		// TODO: remove this, it's automatically applied by spring-boot-gradle
 		classpath 'io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE'
@@ -25,8 +24,6 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'idea'
 apply plugin: "jacoco"
 apply plugin: "maven-publish"
-//apply plugin: 'docker'
-//apply plugin: 'com.bmuschko.docker-java-application'
 
 ext {
 	userHome = System.properties['user.home']
@@ -138,31 +135,7 @@ bintrayUpload {
 	dependsOn assemble
 }
 
-//docker {
-//	group =project.hasProperty('dockerUser') ? project.property('dockerUser') : System.getenv('DOCKER_USER')
-//}
-//
-//task dockerPush(type: Docker, dependsOn: build) {
-//	push = true
-//	applicationName = jar.baseName
-//
-//	// Dockerfile
-//	baseImage "smartsteuer/clewarecontrol-jre"
-//	volume "/tmp"
-//	addFile jar.archivePath, "/app.jar"
-//	runCommand "bash -c 'touch /app.jar'"
-//	entryPoint(["java","-Djava.security.egd=file:/dev/urandom","-jar","/app.jar"])
-//}
 
-//docker {
-//
-//	javaApplication {
-//		baseImage = 'smartsteuer/clewarecontrol-jre'
-//		maintainer = 'Eike Hirsch "me@eike-hirsch.net"'
-//		port = 8080
-//		tag = "${dockerUser}/${jar.baseName}:${project.version}"
-//	}
-//}
 apply plugin: 'com.bmuschko.docker-remote-api'
 
 docker {

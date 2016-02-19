@@ -7,7 +7,8 @@ buildscript {
 	}
 	dependencies {
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-		classpath "se.transmode.gradle:gradle-docker:1.2"
+//		classpath "se.transmode.gradle:gradle-docker:1.2"
+		classpath 'com.bmuschko:gradle-docker-plugin:2.6.5'
 		// TODO: remove this, it's automatically applied by spring-boot-gradle
 		classpath 'io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE'
 	}
@@ -24,10 +25,14 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'idea'
 apply plugin: "jacoco"
 apply plugin: "maven-publish"
-apply plugin: 'docker'
+//apply plugin: 'docker'
+//apply plugin: 'com.bmuschko.docker-java-application'
 
 ext {
 	userHome = System.properties['user.home']
+	dockerUser = project.hasProperty('dockerUser') ? project.property('dockerUser') : System.getenv('DOCKER_USER')
+	dockerEMail = project.hasProperty('dockerEMail') ? project.property('dockerEMail') : System.getenv('DOCKER_EMAIL')
+	dockerPassword = project.hasProperty('dockerPassword') ? project.property('dockerPassword') : System.getenv('DOCKER_PASSWORD')
 }
 
 scmVersion {
@@ -133,21 +138,69 @@ bintrayUpload {
 	dependsOn assemble
 }
 
+//docker {
+//	group =project.hasProperty('dockerUser') ? project.property('dockerUser') : System.getenv('DOCKER_USER')
+//}
+//
+//task dockerPush(type: Docker, dependsOn: build) {
+//	push = true
+//	applicationName = jar.baseName
+//
+//	// Dockerfile
+//	baseImage "smartsteuer/clewarecontrol-jre"
+//	volume "/tmp"
+//	addFile jar.archivePath, "/app.jar"
+//	runCommand "bash -c 'touch /app.jar'"
+//	entryPoint(["java","-Djava.security.egd=file:/dev/urandom","-jar","/app.jar"])
+//}
+
+//docker {
+//
+//	javaApplication {
+//		baseImage = 'smartsteuer/clewarecontrol-jre'
+//		maintainer = 'Eike Hirsch "me@eike-hirsch.net"'
+//		port = 8080
+//		tag = "${dockerUser}/${jar.baseName}:${project.version}"
+//	}
+//}
+apply plugin: 'com.bmuschko.docker-remote-api'
+
 docker {
-	group = project.hasProperty('dockerUser') ? project.property('dockerUser') : System.getenv('DOCKER_USER')
+	// docker-machine will create those env entries for us - so we will use them as default and only fallback to project properties if needed.
+	url = System.getenv('DOCKER_HOST') ? System.getenv('DOCKER_HOST').replace('tcp', 'https') : project.property('dockerHost')
+	certPath = System.getenv('DOCKER_CERT_PATH') ? System.getenv('DOCKER_CERT_PATH') : file("${userHome}/.docker/machine/certs")
+
+	registryCredentials {
+		username = dockerUser
+		password = dockerPassword
+		email = dockerEMail
+	}
 }
 
-task dockerPush(type: Docker, dependsOn: build) {
-	push = true
-	applicationName = jar.baseName
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 
-	// Dockerfile
-	baseImage "smartsteuer/clewarecontrol-jre"
-	volume "/tmp"
-	addFile jar.archivePath, "/app.jar"
-	runCommand "bash -c 'touch /app.jar'"
-	entryPoint(["java","-Djava.security.egd=file:/dev/urandom","-jar","/app.jar"])
+
+task dockerCopyArchive( type: Copy, dependsOn: build) {
+	from jar.archivePath
+	into "${buildDir}/docker"
 }
+
+task dockerCreateDockerfile(type: Dockerfile, dependsOn: dockerCopyArchive) {
+	instruction "FROM smartsteuer/clewarecontrol-jre"
+	instruction "MAINTAINER Eike Hirsch \"me@eike-hirsch.net\""
+	instruction "VOLUME /tmp"
+	instruction "ADD ${jar.archiveName} /app.jar"
+	instruction "RUN bash -c 'touch /app.jar'"
+	instruction 'ENTRYPOINT ["java","-Djava.security.egd=file:/dev/urandom","-jar","/app.jar"]'
+}
+
+task dockerBuildImage(type: DockerBuildImage) {
+	dependsOn dockerCreateDockerfile
+	inputDir = dockerCreateDockerfile.destFile.parentFile
+	tag = "${dockerUser}/${jar.baseName}:${project.version}"
+}
+
 
 task wrapper(type: Wrapper) {
 	gradleVersion = '2.10'

@@ -168,7 +168,7 @@ apply plugin: 'com.bmuschko.docker-remote-api'
 docker {
 	// docker-machine will create those env entries for us - so we will use them as default and only fallback to project properties if needed.
 	url = System.getenv('DOCKER_HOST') ? System.getenv('DOCKER_HOST').replace('tcp', 'https') : project.property('dockerHost')
-	certPath = System.getenv('DOCKER_CERT_PATH') ? System.getenv('DOCKER_CERT_PATH') : file("${userHome}/.docker/machine/certs")
+	certPath = System.getenv('DOCKER_CERT_PATH') ?: project.property('dockerCertPath')
 
 	registryCredentials {
 		username = dockerUser

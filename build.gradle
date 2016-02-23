@@ -141,7 +141,7 @@ apply plugin: 'com.bmuschko.docker-remote-api'
 docker {
 	// docker-machine will create those env entries for us - so we will use them as default and only fallback to project properties if needed.
 	url = System.getenv('DOCKER_HOST') ? System.getenv('DOCKER_HOST').replace('tcp', 'https') : project.property('dockerHost')
-	certPath = System.getenv('DOCKER_CERT_PATH') ?: project.property('dockerCertPath')
+	certPath = System.getenv('DOCKER_CERT_PATH') ? file(System.getenv('DOCKER_CERT_PATH')) : file(project.property('dockerCertPath'))
 
 	registryCredentials {
 		username = dockerUser
@@ -150,9 +150,11 @@ docker {
 	}
 }
 
-import com.bmuschko.gradle.docker.tasks.image.Dockerfile
-import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 
+
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 
 task dockerCopyArchive( type: Copy, dependsOn: build) {
 	from jar.archivePath
@@ -168,10 +170,14 @@ task dockerCreateDockerfile(type: Dockerfile, dependsOn: dockerCopyArchive) {
 	instruction 'ENTRYPOINT ["java","-Djava.security.egd=file:/dev/urandom","-jar","/app.jar"]'
 }
 
-task dockerBuildImage(type: DockerBuildImage) {
-	dependsOn dockerCreateDockerfile
+task dockerBuildImage(type: DockerBuildImage, dependsOn: dockerCreateDockerfile) {
 	inputDir = dockerCreateDockerfile.destFile.parentFile
 	tag = "${dockerUser}/${jar.baseName}:${project.version}"
+}
+
+task dockerPushImage(type: DockerPushImage, dependsOn: dockerBuildImage) {
+	imageName = "${dockerUser}/${jar.baseName}"
+	tag = project.version
 }
 
 

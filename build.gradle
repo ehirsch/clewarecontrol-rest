@@ -30,6 +30,7 @@ ext {
 	dockerUser = project.hasProperty('dockerUser') ? project.property('dockerUser') : System.getenv('DOCKER_USER')
 	dockerEMail = project.hasProperty('dockerEMail') ? project.property('dockerEMail') : System.getenv('DOCKER_EMAIL')
 	dockerPassword = project.hasProperty('dockerPassword') ? project.property('dockerPassword') : System.getenv('DOCKER_PASSWORD')
+	dockerCertPath = project.hasProperty('dockerCertPath') ? project.property('dockerCertPath') : ''
 }
 
 scmVersion {
@@ -141,7 +142,7 @@ apply plugin: 'com.bmuschko.docker-remote-api'
 docker {
 	// docker-machine will create those env entries for us - so we will use them as default and only fallback to project properties if needed.
 	url = System.getenv('DOCKER_HOST') ? System.getenv('DOCKER_HOST').replace('tcp', 'https') : project.property('dockerHost')
-	certPath = System.getenv('DOCKER_CERT_PATH') ? file(System.getenv('DOCKER_CERT_PATH')) : file(project.property('dockerCertPath'))
+	certPath = System.getenv('DOCKER_CERT_PATH') ? file(System.getenv('DOCKER_CERT_PATH')) : dockerCertPath
 
 	registryCredentials {
 		username = dockerUser

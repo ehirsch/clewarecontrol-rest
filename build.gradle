@@ -7,7 +7,7 @@ buildscript {
 	}
 	dependencies {
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-		classpath 'com.bmuschko:gradle-docker-plugin:2.6.5'
+		classpath 'com.bmuschko:gradle-docker-plugin:2.6.6'
 		// TODO: remove this, it's automatically applied by spring-boot-gradle
 		classpath 'io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE'
 	}
@@ -172,17 +172,17 @@ task dockerCreateDockerfile(type: Dockerfile, dependsOn: dockerCopyArchive) {
 	instruction 'ENTRYPOINT ["java","-Djava.security.egd=file:/dev/urandom","-jar","/app.jar"]'
 }
 
-task dockerBuildImage(type: DockerBuildImage, dependsOn: dockerCreateDockerfile) {
+task dockerImage(type: DockerBuildImage, dependsOn: dockerCreateDockerfile) {
 	inputDir = dockerCreateDockerfile.destFile.parentFile
 	tag = "${dockerUser}/${jar.baseName}:${project.version}"
 }
 
-task dockerPushImage(type: DockerPushImage, dependsOn: dockerBuildImage) {
+task dockerPush(type: DockerPushImage, dependsOn: dockerImage) {
 	imageName = "${dockerUser}/${jar.baseName}"
 	tag = project.version
 }
 
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '2.10'
+	gradleVersion = '2.11'
 }

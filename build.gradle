@@ -172,7 +172,7 @@ task dockerCreateDockerfile(type: Dockerfile, dependsOn: dockerCopyArchive) {
 	instruction 'ENTRYPOINT ["java","-Djava.security.egd=file:/dev/urandom","-jar","/app.jar"]'
 }
 
-task dockerImage(type: DockerBuildImage, dependsOn: dockerCreateDockerfile) {
+task dockerBuildImage(type: DockerBuildImage, dependsOn: dockerCreateDockerfile) {
 	inputDir = dockerCreateDockerfile.destFile.parentFile
 	tag = "${dockerUser}/${jar.baseName}:${project.version}"
 }

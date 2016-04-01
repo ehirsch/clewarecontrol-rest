@@ -177,7 +177,7 @@ task dockerBuildImage(type: DockerBuildImage, dependsOn: dockerCreateDockerfile)
 	tag = "${dockerUser}/${jar.baseName}:${project.version}"
 }
 
-task dockerPush(type: DockerPushImage, dependsOn: dockerImage) {
+task dockerPush(type: DockerPushImage, dependsOn: dockerBuildImage) {
 	imageName = "${dockerUser}/${jar.baseName}"
 	tag = project.version
 }

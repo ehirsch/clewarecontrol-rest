@@ -1,30 +1,26 @@
 buildscript {
-	ext {
-		springBootVersion = '1.3.2.RELEASE'
-	}
 	repositories {
 		jcenter()
 	}
 	dependencies {
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-		classpath 'com.bmuschko:gradle-docker-plugin:2.6.7'
+		classpath "com.bmuschko:gradle-docker-plugin:${dockerPluginVersion}"// s. gradle/docker.gradle
+		classpath "pl.allegro.tech.build:axion-release-plugin:${releasePluginVersion}" //s. gradle/release-version.gradle
+		classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:${bintrayPluginVersion}" //s. gradle/publishing.gradle
 	}
-}
-
-plugins {
-	id 'pl.allegro.tech.build.axion-release' version '1.3.4'
-	id 'com.jfrog.bintray' version '1.5'
 }
 
 apply plugin: 'groovy'
 apply plugin: 'spring-boot'
-apply plugin: 'io.spring.dependency-management'
 apply plugin: 'idea'
-apply plugin: "jacoco"
-apply plugin: "maven-publish"
+apply plugin: 'jacoco'
+apply plugin: 'pl.allegro.tech.build.axion-release'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.bmuschko.docker-remote-api'
+
 
 ext {
-	userHome = System.properties['user.home']
 	dockerUser = project.hasProperty('dockerUser') ? project.property('dockerUser') : System.getenv('DOCKER_USER')
 	dockerEMail = project.hasProperty('dockerEMail') ? project.property('dockerEMail') : System.getenv('DOCKER_EMAIL')
 	dockerPassword = project.hasProperty('dockerPassword') ? project.property('dockerPassword') : System.getenv('DOCKER_PASSWORD')
@@ -135,8 +131,6 @@ bintrayUpload {
 	dependsOn assemble
 }
 
-
-apply plugin: 'com.bmuschko.docker-remote-api'
 
 docker {
 	// docker-machine will create those env entries for us - so we will use them as default and only fallback to project properties if needed.
